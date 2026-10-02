@@ -36,7 +36,6 @@ El repositorio está organizado físicamente para garantizar la separación de r
 ### Backend
 1. Navegar a la carpeta del backend: `cd backend`
 2. Ejecutar la aplicación con Maven: `./mvnw spring-boot:run`
-*(Asegúrate de configurar previamente las credenciales de tu base de datos MySQL local en el archivo `application.properties` de Spring Boot).*
 
 ## Equipo de Desarrollo
 **Linea Base 2000**
