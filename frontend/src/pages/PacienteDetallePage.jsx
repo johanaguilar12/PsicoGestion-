@@ -25,18 +25,17 @@ const getMenuPosition = (target) => {
   };
 };
 
-function UsuarioDetallePage() {
+function PacienteDetallePage() {
   const navigate = useNavigate();
-  const { userId } = useParams();
-  const [usuario, setUsuario] = useState({
-    id: userId,
-    name: "Celia Díaz Ramos",
-    correo: "admin@correo.uady.mx",
-    telefono: "999 999 9999",
-    rol: "Administrador",
-    fechaRegistro: "12/09/2026",
-    ultimaActualizacion: "22/09/2026",
-    foto: "/images/usuario-ejemplo.jpg",
+  const { patientId } = useParams();
+  const [paciente, setPaciente] = useState({
+    id: patientId,
+    name: "Raúl Diego Pinto López",
+    curp: "PILR030824HYNRPS06",
+    fechaNacimiento: "24/08/2003",
+    sexo: "Hombre",
+    correo: "19186424@alumnos.uady.mx",
+    telefono: "999 653 4988",
     status: "Activo",
   });
   const [menuOpen, setMenuOpen] = useState(false);
@@ -49,7 +48,7 @@ function UsuarioDetallePage() {
   };
 
   const handleToggleStatus = () => {
-    setUsuario((current) => ({
+    setPaciente((current) => ({
       ...current,
       status: current.status === "Activo" ? "Inactivo" : "Activo",
     }));
@@ -58,47 +57,32 @@ function UsuarioDetallePage() {
 
   return (
     <div className="create-page detail-page">
-      <Breadcrumb items={[{ label: "Usuarios", to: "/usuarios" }, { label: usuario.name }]} />
+      <Breadcrumb items={[{ label: "Pacientes", to: "/pacientes" }, { label: paciente.name }]} />
 
       <DetailHeader
-        title="Detalle usuario"
-        onEdit={() => navigate(`/usuarios/${userId}/editar`)}
+        title="Detalle paciente"
+        onEdit={() => navigate(`/pacientes/${patientId}/editar`)}
         onMenu={handleMenu}
       />
 
       <section className="create-form detail-card">
         <div className="create-form__content">
           <section className="create-section">
-            <h2 className="create-section__title">Información del usuario</h2>
-
-            <div className="create-profile-layout">
-              <div className="create-profile-layout__fields">
-                <DetailField label="Nombre completo" value={usuario.name} />
-                <DetailField label="Correo institucional" value={usuario.correo} />
-                <DetailField label="Teléfono" value={usuario.telefono} />
-              </div>
-
-              <div className="create-profile-layout__photo detail-profile-photo">
-                <img
-                  src={usuario.foto}
-                  alt={`Fotografía de ${usuario.name}`}
-                  className="detail-profile-photo__image"
-                />
-              </div>
-            </div>
-
-            <DetailField label="Rol" value={usuario.rol} />
-
+            <h2 className="create-section__title">Información personal</h2>
             <div className="form-grid form-grid--two">
-              <DetailField label="Fecha de registro" value={usuario.fechaRegistro} />
-              <DetailField label="Última actualización" value={usuario.ultimaActualizacion} />
+              <DetailField label="Nombre completo" value={paciente.name} />
+              <DetailField label="CURP" value={paciente.curp} />
+              <DetailField label="Fecha de nacimiento" value={paciente.fechaNacimiento} />
+              <DetailField label="Sexo" value={paciente.sexo} />
+              <DetailField label="Correo institucional" value={paciente.correo} />
+              <DetailField label="Teléfono" value={paciente.telefono} />
             </div>
           </section>
         </div>
       </section>
 
       <ActionsMenu
-        item={menuOpen ? usuario : null}
+        item={menuOpen ? paciente : null}
         position={menuPosition}
         onToggleStatus={handleToggleStatus}
         onDelete={() => {
@@ -110,15 +94,15 @@ function UsuarioDetallePage() {
 
       <ConfirmDialog
         open={confirmDelete}
-        title="Eliminar usuario"
-        message={`¿Deseas eliminar a ${usuario.name}? Esta acción no se puede deshacer.`}
+        title="Eliminar paciente"
+        message={`¿Deseas eliminar a ${paciente.name}? Esta acción no se puede deshacer.`}
         confirmLabel="Eliminar"
         danger
-        onConfirm={() => navigate("/usuarios")}
+        onConfirm={() => navigate("/pacientes")}
         onCancel={() => setConfirmDelete(false)}
       />
     </div>
   );
 }
 
-export default UsuarioDetallePage;
+export default PacienteDetallePage;

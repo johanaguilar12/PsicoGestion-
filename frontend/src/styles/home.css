@@ -1,6 +1,7 @@
 .home-page {
   width: 100%;
   max-width: 1440px;
+  margin-inline:auto;
 }
 
 
@@ -18,7 +19,7 @@
 
   color: var(--gray-600);
 
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 400;
   line-height: 24px;
 }
@@ -69,7 +70,7 @@
 
   color: var(--blue-700);
 
-  font-size: 16px;
+  font-size:18px;
   font-weight: 500;
   line-height: 24px;
 
@@ -134,15 +135,15 @@
 .home-stat-card__label {
   color: var(--gray-600);
 
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 400;
-  line-height: 24px;
+  line-height: 28px;
 }
 
 .home-stat-card__value {
   color: var(--blue-900);
 
-  font-size: 28px;
+  font-size: 30px;
   font-weight: 700;
   line-height: 36px;
 }
@@ -178,7 +179,7 @@
 .next-appointment__time-label {
   color: var(--blue-700);
 
-  font-size: 14px;
+  font-size: 18px;
   font-weight: 500;
   line-height: 20px;
 
@@ -218,9 +219,9 @@
 .next-appointment__label {
   color: var(--gray-500);
 
-  font-size: 14px;
+  font-size: 20px;
   font-weight: 400;
-  line-height: 20px;
+  line-height: 28px;
 }
 
 .next-appointment__primary-value {
@@ -244,11 +245,11 @@
 }
 
 .next-appointment__detail-value {
-  color: var(--gray-700);
+  color: var(--blue-900);
 
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 400;
-  line-height: 24px;
+  line-height: 28px;
 
   white-space: nowrap;
 }
@@ -320,9 +321,9 @@
 .quick-action__content span {
   color: var(--gray-600);
 
-  font-size: 14px;
+  font-size: 20px;
   font-weight: 400;
-  line-height: 20px;
+  line-height: 28px;
 }
 
 .quick-action__arrow {
@@ -378,8 +379,8 @@
   }
 
   .home-header__date {
-    font-size: 16px;
-    line-height: 24px;
+    font-size: 20px;
+    line-height: 28px;
   }
 
 
@@ -398,14 +399,14 @@
   .home-section__title {
     margin-bottom: 16px;
 
-    font-size: 20px;
-    line-height: 28px;
+    font-size: 24px;
+    line-height: 30px;
   }
 
   .home-section__link {
     padding: 8px;
 
-    font-size: 16px;
+    font-size: 18px;
     line-height: 24px;
   }
 
@@ -434,12 +435,12 @@
   }
 
   .home-stat-card__label {
-    font-size: 16px;
+    font-size: 20px;
     line-height: 24px;
   }
 
   .home-stat-card__value {
-    font-size: 24px;
+    font-size:24px;
     line-height: 32px;
   }
 
@@ -452,7 +453,7 @@
   }
 
   .next-appointment__time-label {
-    font-size: 16px;
+    font-size: 18px;
     line-height: 24px;
   }
 
@@ -470,8 +471,8 @@
   }
 
   .next-appointment__label {
-    font-size: 16px;
-    line-height: 24px;
+    font-size: 20px;
+    line-height: 28px;
   }
 
   .next-appointment__primary-value {
@@ -489,7 +490,7 @@
   }
 
   .next-appointment__detail-value {
-    font-size: 16px;
+    font-size: 20px;
     line-height: 24px;
   }
 
@@ -518,7 +519,7 @@
   }
 
   .quick-action__content span {
-    font-size: 16px;
-    line-height: 24px;
+    font-size: 18px;
+    line-height: 28px;
   }
 }

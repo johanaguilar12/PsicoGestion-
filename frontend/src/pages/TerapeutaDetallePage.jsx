@@ -25,18 +25,18 @@ const getMenuPosition = (target) => {
   };
 };
 
-function UsuarioDetallePage() {
+function TerapeutaDetallePage() {
   const navigate = useNavigate();
-  const { userId } = useParams();
-  const [usuario, setUsuario] = useState({
-    id: userId,
-    name: "Celia Díaz Ramos",
-    correo: "admin@correo.uady.mx",
-    telefono: "999 999 9999",
-    rol: "Administrador",
-    fechaRegistro: "12/09/2026",
-    ultimaActualizacion: "22/09/2026",
-    foto: "/images/usuario-ejemplo.jpg",
+  const { therapistId } = useParams();
+  const [terapeuta, setTerapeuta] = useState({
+    id: therapistId,
+    name: "Francisco Suárez León",
+    correo: "ejemplo@correo.uady.mx",
+    telefono: "999 245 4554",
+    fechaNacimiento: "03/03/1970",
+    sexo: "Hombre",
+    cedula: "45646797",
+    foto: "/images/terapeuta-ejemplo.jpg",
     status: "Activo",
   });
   const [menuOpen, setMenuOpen] = useState(false);
@@ -49,7 +49,7 @@ function UsuarioDetallePage() {
   };
 
   const handleToggleStatus = () => {
-    setUsuario((current) => ({
+    setTerapeuta((current) => ({
       ...current,
       status: current.status === "Activo" ? "Inactivo" : "Activo",
     }));
@@ -58,47 +58,50 @@ function UsuarioDetallePage() {
 
   return (
     <div className="create-page detail-page">
-      <Breadcrumb items={[{ label: "Usuarios", to: "/usuarios" }, { label: usuario.name }]} />
+      <Breadcrumb items={[{ label: "Terapeutas", to: "/terapeutas" }, { label: terapeuta.name }]} />
 
       <DetailHeader
-        title="Detalle usuario"
-        onEdit={() => navigate(`/usuarios/${userId}/editar`)}
+        title="Detalle terapeuta"
+        onEdit={() => navigate(`/terapeutas/${therapistId}/editar`)}
         onMenu={handleMenu}
       />
 
       <section className="create-form detail-card">
         <div className="create-form__content">
           <section className="create-section">
-            <h2 className="create-section__title">Información del usuario</h2>
+            <h2 className="create-section__title">Información personal</h2>
 
             <div className="create-profile-layout">
               <div className="create-profile-layout__fields">
-                <DetailField label="Nombre completo" value={usuario.name} />
-                <DetailField label="Correo institucional" value={usuario.correo} />
-                <DetailField label="Teléfono" value={usuario.telefono} />
+                <DetailField label="Nombre completo" value={terapeuta.name} />
+                <DetailField label="Correo electrónico" value={terapeuta.correo} />
+                <DetailField label="Teléfono" value={terapeuta.telefono} />
               </div>
 
               <div className="create-profile-layout__photo detail-profile-photo">
                 <img
-                  src={usuario.foto}
-                  alt={`Fotografía de ${usuario.name}`}
+                  src={terapeuta.foto}
+                  alt={`Fotografía de ${terapeuta.name}`}
                   className="detail-profile-photo__image"
                 />
               </div>
             </div>
 
-            <DetailField label="Rol" value={usuario.rol} />
-
             <div className="form-grid form-grid--two">
-              <DetailField label="Fecha de registro" value={usuario.fechaRegistro} />
-              <DetailField label="Última actualización" value={usuario.ultimaActualizacion} />
+              <DetailField label="Fecha de nacimiento" value={terapeuta.fechaNacimiento} />
+              <DetailField label="Sexo" value={terapeuta.sexo} />
+            </div>
+
+            <div className="create-section__subsection">
+              <h2 className="create-section__title">Información profesional</h2>
+              <DetailField label="Cédula profesional" value={terapeuta.cedula} />
             </div>
           </section>
         </div>
       </section>
 
       <ActionsMenu
-        item={menuOpen ? usuario : null}
+        item={menuOpen ? terapeuta : null}
         position={menuPosition}
         onToggleStatus={handleToggleStatus}
         onDelete={() => {
@@ -110,15 +113,15 @@ function UsuarioDetallePage() {
 
       <ConfirmDialog
         open={confirmDelete}
-        title="Eliminar usuario"
-        message={`¿Deseas eliminar a ${usuario.name}? Esta acción no se puede deshacer.`}
+        title="Eliminar terapeuta"
+        message={`¿Deseas eliminar a ${terapeuta.name}? Esta acción no se puede deshacer.`}
         confirmLabel="Eliminar"
         danger
-        onConfirm={() => navigate("/usuarios")}
+        onConfirm={() => navigate("/terapeutas")}
         onCancel={() => setConfirmDelete(false)}
       />
     </div>
   );
 }
 
-export default UsuarioDetallePage;
+export default TerapeutaDetallePage;

@@ -25,18 +25,12 @@ const getMenuPosition = (target) => {
   };
 };
 
-function UsuarioDetallePage() {
+function SalaDetallePage() {
   const navigate = useNavigate();
-  const { userId } = useParams();
-  const [usuario, setUsuario] = useState({
-    id: userId,
-    name: "Celia Díaz Ramos",
-    correo: "admin@correo.uady.mx",
-    telefono: "999 999 9999",
-    rol: "Administrador",
-    fechaRegistro: "12/09/2026",
-    ultimaActualizacion: "22/09/2026",
-    foto: "/images/usuario-ejemplo.jpg",
+  const { roomId } = useParams();
+  const [sala, setSala] = useState({
+    id: roomId,
+    name: "Sala 2",
     status: "Activo",
   });
   const [menuOpen, setMenuOpen] = useState(false);
@@ -49,7 +43,7 @@ function UsuarioDetallePage() {
   };
 
   const handleToggleStatus = () => {
-    setUsuario((current) => ({
+    setSala((current) => ({
       ...current,
       status: current.status === "Activo" ? "Inactivo" : "Activo",
     }));
@@ -58,47 +52,25 @@ function UsuarioDetallePage() {
 
   return (
     <div className="create-page detail-page">
-      <Breadcrumb items={[{ label: "Usuarios", to: "/usuarios" }, { label: usuario.name }]} />
+      <Breadcrumb items={[{ label: "Salas", to: "/salas" }, { label: sala.name }]} />
 
       <DetailHeader
-        title="Detalle usuario"
-        onEdit={() => navigate(`/usuarios/${userId}/editar`)}
+        title="Detalle sala"
+        onEdit={() => navigate(`/salas/${roomId}/editar`)}
         onMenu={handleMenu}
       />
 
       <section className="create-form detail-card">
         <div className="create-form__content">
           <section className="create-section">
-            <h2 className="create-section__title">Información del usuario</h2>
-
-            <div className="create-profile-layout">
-              <div className="create-profile-layout__fields">
-                <DetailField label="Nombre completo" value={usuario.name} />
-                <DetailField label="Correo institucional" value={usuario.correo} />
-                <DetailField label="Teléfono" value={usuario.telefono} />
-              </div>
-
-              <div className="create-profile-layout__photo detail-profile-photo">
-                <img
-                  src={usuario.foto}
-                  alt={`Fotografía de ${usuario.name}`}
-                  className="detail-profile-photo__image"
-                />
-              </div>
-            </div>
-
-            <DetailField label="Rol" value={usuario.rol} />
-
-            <div className="form-grid form-grid--two">
-              <DetailField label="Fecha de registro" value={usuario.fechaRegistro} />
-              <DetailField label="Última actualización" value={usuario.ultimaActualizacion} />
-            </div>
+            <h2 className="create-section__title">Información de la sala</h2>
+            <DetailField label="Nombre de la sala" value={sala.name} />
           </section>
         </div>
       </section>
 
       <ActionsMenu
-        item={menuOpen ? usuario : null}
+        item={menuOpen ? sala : null}
         position={menuPosition}
         onToggleStatus={handleToggleStatus}
         onDelete={() => {
@@ -110,15 +82,15 @@ function UsuarioDetallePage() {
 
       <ConfirmDialog
         open={confirmDelete}
-        title="Eliminar usuario"
-        message={`¿Deseas eliminar a ${usuario.name}? Esta acción no se puede deshacer.`}
+        title="Eliminar sala"
+        message={`¿Deseas eliminar ${sala.name}? Esta acción no se puede deshacer.`}
         confirmLabel="Eliminar"
         danger
-        onConfirm={() => navigate("/usuarios")}
+        onConfirm={() => navigate("/salas")}
         onCancel={() => setConfirmDelete(false)}
       />
     </div>
   );
 }
 
-export default UsuarioDetallePage;
+export default SalaDetallePage;
