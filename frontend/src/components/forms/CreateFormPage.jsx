@@ -29,16 +29,6 @@ function CreateFormPage({
 
         <div className="create-form__actions">
           <button
-            type="submit"
-            className="
-              create-form__button
-              create-form__button--primary
-            "
-          >
-            Guardar
-          </button>
-
-          <button
             type="button"
             className="
               create-form__button
@@ -47,6 +37,16 @@ function CreateFormPage({
             onClick={onCancel}
           >
             Cancelar
+          </button>
+
+          <button
+            type="submit"
+            className="
+              create-form__button
+              create-form__button--primary
+            "
+          >
+            Guardar
           </button>
         </div>
       </form>

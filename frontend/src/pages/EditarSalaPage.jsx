@@ -70,6 +70,13 @@ function EditarSalaPage() {
             </div>
 
             <div className="create-form__actions">
+            <button
+                type="button"
+                className="create-form__button create-form__button--secondary"
+                onClick={() => navigate(`/salas/${roomId}`)}
+              >
+                Cancelar
+              </button>
               <button
                 type="submit"
                 className="create-form__button create-form__button--primary"
@@ -77,13 +84,7 @@ function EditarSalaPage() {
                 Guardar cambios
               </button>
 
-              <button
-                type="button"
-                className="create-form__button create-form__button--secondary"
-                onClick={() => navigate(`/salas/${roomId}`)}
-              >
-                Cancelar
-              </button>
+              
             </div>
           </section>
         </div>

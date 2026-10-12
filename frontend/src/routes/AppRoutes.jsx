@@ -9,7 +9,6 @@ import EditarTerapeutaPage from "../pages/EditarTerapeutaPage";
 import EditarUsuarioPage from "../pages/EditarUsuarioPage";
 import InicioPage from "../pages/InicioPage";
 import LoginPage from "../pages/LoginPage";
-import NuevaCitaPage from "../pages/NuevaCitaPage";
 import NuevaSalaPage from "../pages/NuevaSalaPage";
 import NuevoPacientePage from "../pages/NuevoPacientePage";
 import NuevoTerapeutaPage from "../pages/NuevoTerapeutaPage";
@@ -32,7 +31,7 @@ function AppRoutes() {
         <Route index element={<InicioPage />} />
 
         <Route path="agenda" element={<AgendaPage />} />
-        <Route path="agenda/nueva" element={<NuevaCitaPage />} />
+        <Route path="agenda/nueva" element={<Navigate to="/agenda?nueva=1" replace />} />
 
         <Route path="pacientes" element={<PacientesPage />} />
         <Route path="pacientes/nuevo" element={<NuevoPacientePage />} />

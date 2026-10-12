@@ -148,14 +148,7 @@ function EditarPacientePage() {
             </div>
 
             <div className="create-form__actions">
-              <button
-                type="submit"
-                className="create-form__button create-form__button--primary"
-              >
-                Guardar cambios
-              </button>
-
-              <button
+            <button
                 type="button"
                 className="create-form__button create-form__button--secondary"
                 onClick={() =>
@@ -164,6 +157,14 @@ function EditarPacientePage() {
               >
                 Cancelar
               </button>
+              <button
+                type="submit"
+                className="create-form__button create-form__button--primary"
+              >
+                Guardar cambios
+              </button>
+
+              
             </div>
           </section>
         </div>

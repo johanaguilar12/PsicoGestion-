@@ -199,12 +199,7 @@ function EditarTerapeutaPage() {
             </div>
 
             <div className="create-form__actions">
-              <button
-                type="submit"
-                className="create-form__button create-form__button--primary"
-              >
-                Guardar cambios
-              </button>
+             
 
               <button
                 type="button"
@@ -214,6 +209,13 @@ function EditarTerapeutaPage() {
                 }
               >
                 Cancelar
+              </button>
+
+              <button
+                type="submit"
+                className="create-form__button create-form__button--primary"
+              >
+                Guardar cambios
               </button>
             </div>
           </section>

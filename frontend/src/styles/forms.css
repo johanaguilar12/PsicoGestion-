@@ -374,7 +374,7 @@
 }
 
 .photo-upload__button:hover {
-  background: var(--gold-600);
+  background: var(--gold-800);
 }
 
 .photo-upload__button:active {

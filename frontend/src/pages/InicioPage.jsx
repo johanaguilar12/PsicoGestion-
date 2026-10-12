@@ -45,7 +45,7 @@ const quickActions = [
     id: "new-appointment",
     label: "Nueva cita",
     description: "Agenda una nueva cita",
-    path: "/agenda/nueva",
+    path: "/agenda?nueva=1",
     icon: CalendarPlus,
   },
   {
