@@ -3,7 +3,7 @@ package mx.uady.psicogestion.infrastructure.adapters;
 import mx.uady.psicogestion.application.ports.out.IAutenticacionService;
 import org.springframework.stereotype.Component;
 
-@Component // <-- ¡Esta es la línea clave que Spring no está encontrando!
+@Component
 public class AutenticacionAdapter implements IAutenticacionService {
 
     @Override
