@@ -23,8 +23,10 @@ public class SalaController {
         try {
             Sala nuevaSala = gestionarSalasUseCase.registrar(sala);
             return new ResponseEntity<>(nuevaSala, HttpStatus.CREATED);
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | IllegalStateException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

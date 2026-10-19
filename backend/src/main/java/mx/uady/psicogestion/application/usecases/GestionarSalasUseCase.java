@@ -18,6 +18,11 @@ public class GestionarSalasUseCase {
         if (!sala.validarNombreCorto()) {
             throw new IllegalArgumentException("El nombre de la sala es inválido o excede los 10 caracteres.");
         }
+
+        if (salaRepository.buscarPorNombre(sala.getNombreSala()).isPresent()) {
+            throw new IllegalStateException("El nombre de la sala ya está registrado.");
+        }
+
         return salaRepository.guardar(sala);
     }
 

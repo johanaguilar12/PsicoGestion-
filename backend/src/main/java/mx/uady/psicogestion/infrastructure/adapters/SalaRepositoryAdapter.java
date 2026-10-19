@@ -7,6 +7,7 @@ import mx.uady.psicogestion.infrastructure.persistence.SalaEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -42,5 +43,15 @@ public class SalaRepositoryAdapter implements ISalaRepository {
     @Override
     public void eliminar(Integer idSala) {
         jpaRepository.deleteById(idSala);
+    }
+
+    @Override
+    public Optional<Sala> buscarPorNombre(String nombre) {
+        return jpaRepository.findByNombreSala(nombre).map(e -> {
+            Sala s = new Sala();
+            s.setIdSala(e.getIdSala());
+            s.setNombreSala(e.getNombreSala());
+            return s;
+        });
     }
 }

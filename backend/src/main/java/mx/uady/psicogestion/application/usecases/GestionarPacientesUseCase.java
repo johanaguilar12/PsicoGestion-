@@ -3,9 +3,11 @@ package mx.uady.psicogestion.application.usecases;
 import mx.uady.psicogestion.domain.entities.Paciente;
 import mx.uady.psicogestion.application.ports.out.IPacienteRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
+@Transactional
 public class GestionarPacientesUseCase {
 
     private final IPacienteRepository pacienteRepository;
@@ -15,12 +17,10 @@ public class GestionarPacientesUseCase {
     }
 
     public Paciente registrar(Paciente paciente) {
-        // 1. Reglas de Dominio
         if (!paciente.esMayorDeSieteAnios()) {
             throw new IllegalArgumentException("El paciente debe tener 7 años o más al momento del registro.");
         }
 
-        // 2. Reglas de Aplicación (Unicidad en BD)
         if (pacienteRepository.buscarPorCurp(paciente.getCurp()).isPresent()) {
             throw new IllegalStateException("La CURP ya está registrada en el sistema.");
         }
@@ -28,7 +28,6 @@ public class GestionarPacientesUseCase {
             throw new IllegalStateException("El teléfono ya está registrado.");
         }
 
-        // 3. Persistencia
         return pacienteRepository.guardar(paciente);
     }
 
@@ -37,6 +36,37 @@ public class GestionarPacientesUseCase {
     }
 
     public void darDeBaja(Integer idPaciente) {
+        buscarPorId(idPaciente);
         pacienteRepository.marcarInactivo(idPaciente);
+    }
+
+    public Paciente buscarPorId(Integer idPaciente) {
+        return pacienteRepository.buscarPorId(idPaciente)
+                .orElseThrow(() -> new IllegalArgumentException("Paciente no encontrado con ID: " + idPaciente));
+    }
+
+    public Paciente actualizar(Integer id, Paciente pacienteActualizado) {
+        Paciente existente = buscarPorId(id);
+        pacienteActualizado.setIdPaciente(id);
+
+        if (!pacienteActualizado.esMayorDeSieteAnios()) {
+            throw new IllegalArgumentException("El paciente debe tener 7 años o más.");
+        }
+
+        if (!existente.getCurp().equals(pacienteActualizado.getCurp()) &&
+                pacienteRepository.buscarPorCurp(pacienteActualizado.getCurp()).isPresent()) {
+            throw new IllegalStateException("La nueva CURP ya está registrada por otro paciente.");
+        }
+        if (!existente.getTelefono().equals(pacienteActualizado.getTelefono()) &&
+                pacienteRepository.buscarPorTelefono(pacienteActualizado.getTelefono()).isPresent()) {
+            throw new IllegalStateException("El nuevo teléfono ya está registrado por otro paciente.");
+        }
+
+        return pacienteRepository.actualizar(pacienteActualizado);
+    }
+
+    public void eliminarFisicamente(Integer idPaciente) {
+        buscarPorId(idPaciente);
+        pacienteRepository.eliminar(idPaciente);
     }
 }

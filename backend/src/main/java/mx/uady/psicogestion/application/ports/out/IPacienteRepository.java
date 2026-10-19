@@ -6,8 +6,11 @@ import java.util.Optional;
 
 public interface IPacienteRepository {
     Paciente guardar(Paciente paciente);
-    Optional<Paciente> buscarPorCurp(String curp); // La CURP debe ser única[cite: 4]
-    Optional<Paciente> buscarPorTelefono(String telefono); // El teléfono debe ser único[cite: 4]
+    Optional<Paciente> buscarPorCurp(String curp);
+    Optional<Paciente> buscarPorTelefono(String telefono);
     List<Paciente> obtenerActivos();
-    void marcarInactivo(Integer idPaciente); // Para la baja lógica[cite: 4]
+    Optional<Paciente> buscarPorId(Integer idPaciente);
+    void marcarInactivo(Integer idPaciente);
+    Paciente actualizar(Paciente paciente);
+    void eliminar(Integer idPaciente);
 }

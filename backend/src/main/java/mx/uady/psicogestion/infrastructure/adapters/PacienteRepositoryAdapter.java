@@ -35,7 +35,7 @@ public class PacienteRepositoryAdapter implements IPacienteRepository {
 
         entity.setActivo(paciente.isActivo());
 
-        PacienteEntity guardado = jpaRepository.save(entity);
+        PacienteEntity guardado = jpaRepository.saveAndFlush(entity);
         paciente.setIdPaciente(guardado.getIdPaciente());
         return paciente;
     }
@@ -59,10 +59,32 @@ public class PacienteRepositoryAdapter implements IPacienteRepository {
 
     @Override
     public void marcarInactivo(Integer idPaciente) {
-        jpaRepository.findById(idPaciente).ifPresent(entity -> {
-            entity.setActivo(false);
-            jpaRepository.save(entity);
-        });
+        // Ejecuta directamente el UPDATE forzado en SQL
+        jpaRepository.desactivarPacienteFuerzaBruta(idPaciente);
+    }
+
+    @Override
+    public Optional<Paciente> buscarPorId(Integer idPaciente) {
+        return jpaRepository.findById(idPaciente).map(this::mapearADominio);
+    }
+
+    @Override
+    public Paciente actualizar(Paciente paciente) {
+        return jpaRepository.findById(paciente.getIdPaciente()).map(entity -> {
+            entity.setNombreCompleto(paciente.getNombreCompleto());
+            entity.setCurp(paciente.getCurp());
+            entity.setSexo(paciente.getSexo());
+            entity.setFechaNacimiento(paciente.getFechaNacimiento());
+            entity.setTelefono(paciente.getTelefono());
+
+            PacienteEntity actualizado = jpaRepository.saveAndFlush(entity);
+            return mapearADominio(actualizado);
+        }).orElseThrow(() -> new IllegalArgumentException("Paciente no encontrado"));
+    }
+
+    @Override
+    public void eliminar(Integer idPaciente) {
+        jpaRepository.eliminarPacienteFuerzaBruta(idPaciente);
     }
 
     private Paciente mapearADominio(PacienteEntity entity) {
