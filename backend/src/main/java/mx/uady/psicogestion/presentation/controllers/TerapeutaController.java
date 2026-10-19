@@ -53,7 +53,7 @@ public class TerapeutaController {
                     if (!terapeuta.validarDimensionesFoto(bi.getWidth(), bi.getHeight())) {
                         return new ResponseEntity<>("La fotografía debe ser mínimo de 200 x 200 píxeles.", HttpStatus.BAD_REQUEST);
                     }
-                    // Guardar archivo físicamente
+
                     String fileName = System.currentTimeMillis() + "_" + foto.getOriginalFilename().replaceAll("\\s+", "_");
                     Path uploadPath = Paths.get("uploads");
                     if (!Files.exists(uploadPath)) {
@@ -94,8 +94,7 @@ public class TerapeutaController {
         }
     }
 
-    // El PUT (actualizar) se mantiene JSON por ahora para simplificar,
-    // pero si decides actualizar fotos después, aplicaremos la misma lógica del POST.
+
     @PutMapping("/{id}")
     public ResponseEntity<?> actualizarTerapeuta(@PathVariable Integer id, @RequestBody Terapeuta terapeuta) {
         try {

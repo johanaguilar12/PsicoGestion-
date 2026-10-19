@@ -18,11 +18,9 @@ public class GestionarSalasUseCase {
         if (!sala.validarNombreCorto()) {
             throw new IllegalArgumentException("El nombre de la sala es inválido o excede los 10 caracteres.");
         }
-
         if (salaRepository.buscarPorNombre(sala.getNombreSala()).isPresent()) {
             throw new IllegalStateException("El nombre de la sala ya está registrado.");
         }
-
         return salaRepository.guardar(sala);
     }
 
@@ -30,7 +28,30 @@ public class GestionarSalasUseCase {
         return salaRepository.obtenerTodas();
     }
 
+    public Sala buscarPorId(Integer idSala) {
+        return salaRepository.buscarPorId(idSala)
+                .orElseThrow(() -> new IllegalArgumentException("Sala no encontrada."));
+    }
+
+    public Sala actualizar(Integer id, Sala sala) {
+        Sala existente = buscarPorId(id);
+
+        if (!sala.validarNombreCorto()) {
+            throw new IllegalArgumentException("El nombre de la sala es inválido o excede los 10 caracteres.");
+        }
+
+
+        if (!existente.getNombreSala().equalsIgnoreCase(sala.getNombreSala()) &&
+                salaRepository.buscarPorNombre(sala.getNombreSala()).isPresent()) {
+            throw new IllegalStateException("El nuevo nombre de la sala ya está registrado por otra sala.");
+        }
+
+        sala.setIdSala(id);
+        return salaRepository.guardar(sala);
+    }
+
     public void eliminarSala(Integer idSala) {
+        buscarPorId(idSala);
         salaRepository.eliminar(idSala);
     }
 }

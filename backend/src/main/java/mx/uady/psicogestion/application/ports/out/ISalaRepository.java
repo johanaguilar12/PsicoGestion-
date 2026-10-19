@@ -9,4 +9,5 @@ public interface ISalaRepository {
     List<Sala> obtenerTodas();
     void eliminar(Integer idSala);
     Optional<Sala> buscarPorNombre(String nombre);
+    Optional<Sala> buscarPorId(Integer idSala); // Agregado para soportar edición y vistas detalle
 }

@@ -29,7 +29,7 @@ public class TerapeutaRepositoryAdapter implements ITerapeutaRepository {
 
     @Override
     public List<Terapeuta> obtenerActivos() {
-        // 🚨 Modificado: Ahora devuelve TODOS (activos e inactivos) para que React pueda filtrarlos
+
         return jpaRepository.findAll().stream()
                 .map(this::mapearADominio)
                 .collect(Collectors.toList());

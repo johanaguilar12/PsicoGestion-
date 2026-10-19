@@ -54,4 +54,14 @@ public class SalaRepositoryAdapter implements ISalaRepository {
             return s;
         });
     }
+
+    @Override
+    public Optional<Sala> buscarPorId(Integer idSala) {
+        return jpaRepository.findById(idSala).map(e -> {
+            Sala s = new Sala();
+            s.setIdSala(e.getIdSala());
+            s.setNombreSala(e.getNombreSala());
+            return s;
+        });
+    }
 }

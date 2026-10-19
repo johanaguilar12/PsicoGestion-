@@ -12,7 +12,7 @@ public class Sala {
     public String getNombreSala() { return nombreSala; }
     public void setNombreSala(String nombreSala) { this.nombreSala = nombreSala; }
 
-    // --- Reglas de Negocio Empresariales ---
+
     public boolean validarNombreCorto() {
         return this.nombreSala != null && !this.nombreSala.trim().isEmpty() && this.nombreSala.length() <= 10;
     }

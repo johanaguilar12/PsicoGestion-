@@ -36,7 +36,7 @@ public class Terapeuta {
     public boolean isActivo() { return activo; }
     public void setActivo(boolean activo) { this.activo = activo; }
 
-    // --- Reglas de Negocio Empresariales ---
+
     public boolean esNombreValido() {
         return nombreCompleto != null && nombreCompleto.length() <= 50;
     }

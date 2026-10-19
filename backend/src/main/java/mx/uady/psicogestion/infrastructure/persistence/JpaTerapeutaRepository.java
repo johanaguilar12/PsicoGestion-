@@ -17,7 +17,7 @@ public interface JpaTerapeutaRepository extends JpaRepository<TerapeutaEntity, I
 
     List<TerapeutaEntity> findByActivoTrue();
 
-    // 🚨 Instrucción modificada: Funciona como interruptor (Activa/Desactiva)
+
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Transactional
     @Query("UPDATE TerapeutaEntity t SET t.activo = CASE WHEN t.activo = true THEN false ELSE true END WHERE t.idTerapeuta = :id")
