@@ -32,7 +32,6 @@ public class PacienteRepositoryAdapter implements IPacienteRepository {
         if (paciente.getFechaRegistro() != null) {
             entity.setFechaRegistro(paciente.getFechaRegistro().atStartOfDay());
         }
-
         entity.setActivo(paciente.isActivo());
 
         PacienteEntity guardado = jpaRepository.saveAndFlush(entity);
@@ -52,14 +51,14 @@ public class PacienteRepositoryAdapter implements IPacienteRepository {
 
     @Override
     public List<Paciente> obtenerActivos() {
-        return jpaRepository.findByActivoTrue().stream()
+        // 🚨 Modificado: Ahora devuelve TODOS (activos e inactivos) para que React pueda filtrarlos
+        return jpaRepository.findAll().stream()
                 .map(this::mapearADominio)
                 .collect(Collectors.toList());
     }
 
     @Override
     public void marcarInactivo(Integer idPaciente) {
-        // Ejecuta directamente el UPDATE forzado en SQL
         jpaRepository.desactivarPacienteFuerzaBruta(idPaciente);
     }
 
@@ -95,11 +94,9 @@ public class PacienteRepositoryAdapter implements IPacienteRepository {
         pac.setSexo(entity.getSexo());
         pac.setFechaNacimiento(entity.getFechaNacimiento());
         pac.setTelefono(entity.getTelefono());
-
         if (entity.getFechaRegistro() != null) {
             pac.setFechaRegistro(entity.getFechaRegistro().toLocalDate());
         }
-
         pac.setActivo(entity.isActivo());
         return pac;
     }

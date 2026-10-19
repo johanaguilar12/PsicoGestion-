@@ -19,12 +19,11 @@ public interface JpaPacienteRepository extends JpaRepository<PacienteEntity, Int
 
     List<PacienteEntity> findByActivoTrue();
 
-
+    // 🚨 Instrucción modificada: Funciona como interruptor (Activa/Desactiva)
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Transactional
-    @Query("UPDATE PacienteEntity p SET p.activo = false WHERE p.idPaciente = :id")
+    @Query("UPDATE PacienteEntity p SET p.activo = CASE WHEN p.activo = true THEN false ELSE true END WHERE p.idPaciente = :id")
     void desactivarPacienteFuerzaBruta(@Param("id") Integer id);
-
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Transactional

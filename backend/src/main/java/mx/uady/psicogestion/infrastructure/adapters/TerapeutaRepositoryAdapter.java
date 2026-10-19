@@ -22,13 +22,14 @@ public class TerapeutaRepositoryAdapter implements ITerapeutaRepository {
     @Override
     public Terapeuta guardar(Terapeuta terapeuta) {
         TerapeutaEntity entity = mapearAEntity(terapeuta);
-        TerapeutaEntity guardado = jpaRepository.save(entity);
+        TerapeutaEntity guardado = jpaRepository.saveAndFlush(entity);
         terapeuta.setIdTerapeuta(guardado.getIdTerapeuta());
         return terapeuta;
     }
 
     @Override
-    public List<Terapeuta> obtenerTodos() {
+    public List<Terapeuta> obtenerActivos() {
+        // 🚨 Modificado: Ahora devuelve TODOS (activos e inactivos) para que React pueda filtrarlos
         return jpaRepository.findAll().stream()
                 .map(this::mapearADominio)
                 .collect(Collectors.toList());
@@ -42,7 +43,7 @@ public class TerapeutaRepositoryAdapter implements ITerapeutaRepository {
     @Override
     public Terapeuta actualizar(Terapeuta terapeuta) {
         TerapeutaEntity entity = mapearAEntity(terapeuta);
-        jpaRepository.save(entity); // Spring Data JPA usa save() tanto para crear como para actualizar
+        jpaRepository.saveAndFlush(entity);
         return terapeuta;
     }
 
@@ -61,15 +62,27 @@ public class TerapeutaRepositoryAdapter implements ITerapeutaRepository {
         return jpaRepository.findByTelefono(telefono).map(this::mapearADominio);
     }
 
+    @Override
+    public void marcarInactivo(Integer idTerapeuta) {
+        jpaRepository.desactivarTerapeuta(idTerapeuta);
+    }
+
+    @Override
+    public void eliminar(Integer idTerapeuta) {
+        jpaRepository.eliminarTerapeuta(idTerapeuta);
+    }
+
     private Terapeuta mapearADominio(TerapeutaEntity entity) {
         Terapeuta ter = new Terapeuta();
         ter.setIdTerapeuta(entity.getIdTerapeuta());
         ter.setNombreCompleto(entity.getNombreCompleto());
+        ter.setSexo(entity.getSexo());
         ter.setTelefono(entity.getTelefono());
         ter.setCorreoElectronico(entity.getCorreoElectronico());
         ter.setFechaNacimiento(entity.getFechaNacimiento());
         ter.setCedulaProfesional(entity.getCedulaProfesional());
         ter.setFotoPerfil(entity.getFotoPerfil());
+        ter.setActivo(entity.isActivo());
         return ter;
     }
 
@@ -77,11 +90,13 @@ public class TerapeutaRepositoryAdapter implements ITerapeutaRepository {
         TerapeutaEntity entity = new TerapeutaEntity();
         entity.setIdTerapeuta(terapeuta.getIdTerapeuta());
         entity.setNombreCompleto(terapeuta.getNombreCompleto());
+        entity.setSexo(terapeuta.getSexo());
         entity.setTelefono(terapeuta.getTelefono());
         entity.setCorreoElectronico(terapeuta.getCorreoElectronico());
         entity.setFechaNacimiento(terapeuta.getFechaNacimiento());
         entity.setCedulaProfesional(terapeuta.getCedulaProfesional());
         entity.setFotoPerfil(terapeuta.getFotoPerfil());
+        entity.setActivo(terapeuta.isActivo());
         return entity;
     }
 }
