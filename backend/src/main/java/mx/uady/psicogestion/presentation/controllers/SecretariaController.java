@@ -90,4 +90,44 @@ public class SecretariaController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @PutMapping("/{id}")
+    public ResponseEntity<?> actualizarSecretaria(
+            @PathVariable Integer id,
+            @RequestParam("nombreCompleto") String nombreCompleto,
+            @RequestParam("correoElectronico") String correoElectronico,
+            @RequestParam("telefono") String telefono,
+            @RequestParam("rol") String rol,
+            @RequestParam(value = "contrasena", required = false) String contrasena,
+            @RequestParam(value = "foto", required = false) org.springframework.web.multipart.MultipartFile foto) {
+
+        try {
+            Secretaria existente = registrarUsuarioUseCase.buscarPorId(id);
+            existente.setNombreCompleto(nombreCompleto);
+            existente.setCorreoElectronico(correoElectronico);
+            existente.setTelefono(telefono);
+            existente.setRol(rol);
+
+
+            if (contrasena != null && !contrasena.trim().isEmpty()) {
+                existente.setContrasena(contrasena);
+            }
+
+
+            if (foto != null && !foto.isEmpty()) {
+                String fileName = System.currentTimeMillis() + "_" + foto.getOriginalFilename().replaceAll("\\s+", "_");
+                java.nio.file.Path uploadPath = java.nio.file.Paths.get("uploads");
+                if (!java.nio.file.Files.exists(uploadPath)) java.nio.file.Files.createDirectories(uploadPath);
+                java.nio.file.Files.copy(foto.getInputStream(), uploadPath.resolve(fileName));
+                existente.setFotoPerfil("http://localhost:8081/uploads/" + fileName);
+            }
+
+
+            Secretaria actualizada = registrarUsuarioUseCase.ejecutar(existente);
+            return new ResponseEntity<>(actualizada, HttpStatus.OK);
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error al actualizar: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
