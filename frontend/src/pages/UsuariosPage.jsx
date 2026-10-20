@@ -1,10 +1,7 @@
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import DataListPage from "../components/data-list/DataListPage";
 import "../styles/data-list.css";
-
-const users = [
-  { id: 1, name: "Celia Díaz Ramos", email: "ejemplo@correo.uady.mx", phone: "999 999 9999", role: "Administrador", status: "Activo" },
-];
 
 const columns = [
   { key: "name", label: "Nombre" },
@@ -16,6 +13,55 @@ const columns = [
 
 function UsuariosPage() {
   const navigate = useNavigate();
+  const [users, setUsers] = useState([]);
+  const [cargando, setCargando] = useState(true);
+
+  useEffect(() => {
+    const cargarUsuarios = async () => {
+      try {
+        const response = await fetch("http://localhost:8081/api/v1/cuentas");
+        if (response.ok) {
+          const data = await response.json();
+          const usuariosFormateados = data.map(user => ({
+            id: user.idSecretaria,
+            name: user.nombreCompleto,
+            email: user.correoElectronico,
+            phone: user.telefono,
+            role: user.rol || "Administrador",
+            status: user.activo ? "Activo" : "Inactivo"
+          }));
+          setUsers(usuariosFormateados);
+        }
+      } catch (error) {
+        console.error("Error al obtener usuarios:", error);
+      } finally {
+        setCargando(false);
+      }
+    };
+    cargarUsuarios();
+  }, []);
+
+  const handleStatusChange = async (user) => {
+    try {
+      const response = await fetch(`http://localhost:8081/api/v1/cuentas/${user.id}/baja`, { method: "PUT" });
+      return response.ok;
+    } catch (error) {
+      console.error("Error de red al cambiar estatus:", error);
+      return false;
+    }
+  };
+
+  const handleDelete = async (user) => {
+    try {
+      const response = await fetch(`http://localhost:8081/api/v1/cuentas/${user.id}`, { method: "DELETE" });
+      return response.ok;
+    } catch (error) {
+      console.error("Error de red al eliminar:", error);
+      return false;
+    }
+  };
+
+  if (cargando) return <div className="create-page"><h1 className="page-title">Cargando usuarios...</h1></div>;
 
   return (
     <DataListPage
@@ -31,6 +77,8 @@ function UsuariosPage() {
         title: user.name,
         details: [user.email, user.role],
       })}
+      onStatusChange={handleStatusChange}
+      onDelete={handleDelete}
     />
   );
 }

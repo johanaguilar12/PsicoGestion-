@@ -1,12 +1,7 @@
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import DataListPage from "../components/data-list/DataListPage";
 import "../styles/data-list.css";
-
-const rooms = [
-  { id: 1, name: "Sala 1", status: "Activo", showView: false },
-  { id: 2, name: "Sala 2", status: "Activo", showView: false },
-  { id: 3, name: "Sala 3", status: "Inactivo", showView: false },
-];
 
 const columns = [
   { key: "name", label: "Nombre de la sala" },
@@ -15,6 +10,44 @@ const columns = [
 
 function SalasPage() {
   const navigate = useNavigate();
+  const [rooms, setRooms] = useState([]);
+  const [cargando, setCargando] = useState(true);
+
+  useEffect(() => {
+    const cargarSalas = async () => {
+      try {
+        const response = await fetch("http://localhost:8081/api/v1/salas");
+        if (response.ok) {
+          const data = await response.json();
+          const salasFormateadas = data.map(sala => ({
+            id: sala.idSala,
+            name: sala.nombreSala,
+            status: "Libre" // Por RF 4.3.3. Se volverá dinámico con el módulo de Citas
+          }));
+          setRooms(salasFormateadas);
+        }
+      } catch (error) {
+        console.error("Error al obtener las salas:", error);
+      } finally {
+        setCargando(false);
+      }
+    };
+    cargarSalas();
+  }, []);
+
+  const handleDelete = async (sala) => {
+    try {
+      const response = await fetch(`http://localhost:8081/api/v1/salas/${sala.id}`, {
+        method: "DELETE",
+      });
+      return response.ok;
+    } catch (error) {
+      console.error("Error de red al eliminar:", error);
+      return false;
+    }
+  };
+
+  if (cargando) return <div className="create-page"><h1 className="page-title">Cargando salas...</h1></div>;
 
   return (
     <DataListPage
@@ -28,6 +61,7 @@ function SalasPage() {
       basePath="/salas"
       searchKeys={["name"]}
       getMobileFields={(room) => ({ title: room.name, details: [] })}
+      onDelete={handleDelete}
     />
   );
 }

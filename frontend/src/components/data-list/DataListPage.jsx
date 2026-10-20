@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { Filter, Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -25,7 +25,7 @@ function matchesSearch(item, searchKeys, query) {
 
   const digitQuery = onlyDigits(query);
   const numericQuery =
-    digitQuery.length > 0 && /^[\d\s-]+$/.test(query.trim());
+    digitQuery.length > 0 && /^[\d\s-]+\$/.test(query.trim());
 
   return searchKeys.some((key) => {
     const value = item[key];
@@ -69,6 +69,8 @@ function DataListPage({
   tableVariant,
   basePath,
   searchKeys,
+  onStatusChange, 
+  onDelete       
 }) {
   const navigate = useNavigate();
   const [items, setItems] = useState(data);
@@ -78,6 +80,11 @@ function DataListPage({
   const [menuItem, setMenuItem] = useState(null);
   const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
   const [pendingDelete, setPendingDelete] = useState(null);
+
+  
+  useEffect(() => {
+    setItems(data);
+  }, [data]);
 
   const filteredItems = useMemo(
     () =>
@@ -98,14 +105,21 @@ function DataListPage({
     setMenuItem(item);
   };
 
-  const handleToggleStatus = (item) => {
+  const handleToggleStatus = async (item) => {
+    if (onStatusChange) {
+      const success = await onStatusChange(item);
+      if (!success) {
+        setMenuItem(null);
+        return;
+      }
+    }
+
     setItems((currentItems) =>
       currentItems.map((currentItem) =>
         currentItem.id === item.id
           ? {
               ...currentItem,
-              status:
-                currentItem.status === "Activo" ? "Inactivo" : "Activo",
+              status: currentItem.status === "Activo" ? "Inactivo" : "Activo",
             }
           : currentItem,
       ),
@@ -113,7 +127,15 @@ function DataListPage({
     setMenuItem(null);
   };
 
-  const handleDeleteConfirm = () => {
+  const handleDeleteConfirm = async () => {
+    if (onDelete) {
+      const success = await onDelete(pendingDelete);
+      if (!success) {
+        setPendingDelete(null);
+        return;
+      }
+    }
+
     setItems((currentItems) =>
       currentItems.filter((item) => item.id !== pendingDelete.id),
     );
@@ -125,11 +147,7 @@ function DataListPage({
       <div className="data-page__controls">
         <h1 className="page-title data-page__title">{title}</h1>
 
-        <button
-          type="button"
-          className="data-page__create"
-          onClick={onCreate}
-        >
+        <button type="button" className="data-page__create" onClick={onCreate}>
           <Plus size={20} strokeWidth={2} aria-hidden="true" />
           <span>{createLabel}</span>
         </button>
