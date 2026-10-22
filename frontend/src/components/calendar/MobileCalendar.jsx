@@ -39,7 +39,7 @@ function MobileCalendar({ view, date, appointments, onDateChange, onSelect, onCr
                 <button type="button" className="mobile-calendar__empty" onClick={() => onCreate(selectedKey, time)} aria-label={`Crear cita a las ${formatTime(time)}`} />
                 {matches.map((item) => (
                   <button key={item.id} type="button" className={`mobile-calendar__event calendar-event--${item.color || 1}`} onClick={() => onSelect(item)} aria-label={`Ver cita de ${item.patient}, ${formatTime(item.time)}, ${item.room}`}>
-                    <span className="mobile-calendar__event-time">{item.time}–{addMinutes(item.time, 30)}</span>
+                    <span className="mobile-calendar__event-time">{item.time}–{addMinutes(item.time, 60)}</span>
                     <strong>{item.patient}</strong>
                     <span>{item.room}</span>
                   </button>

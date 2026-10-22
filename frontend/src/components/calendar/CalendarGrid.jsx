@@ -17,7 +17,7 @@ function CalendarGrid({ date, view, appointments, onSelect, onCreate }) {
             return <div className="calendar-grid__cell" key={`${key}-${time}`}>
               <button className="calendar-grid__empty" type="button" aria-label={`Crear cita el ${key} a las ${formatTime(time)}`} onClick={() => onCreate(key, time)} />
               {matches.map((item) => <button key={item.id} type="button" className={`calendar-event calendar-event--${item.color || 1}`} onClick={() => onSelect(item)} aria-label={`Ver cita de ${item.patient}, ${formatTime(item.time)}, ${item.room}`}>
-                <span>{item.time}–{addMinutes(item.time, 30)}</span><strong>{item.patient}</strong><span>{item.room}</span>
+                <span>{item.time}–{addMinutes(item.time, 60)}</span><strong>{item.patient}</strong><span>{item.room}</span>
               </button>)}
             </div>;
           })}

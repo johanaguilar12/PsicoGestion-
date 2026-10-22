@@ -719,6 +719,19 @@
   border-color: var(--gray-300);
 }
 
+.calendar-event--pendiente {
+  background-color: #f3e8ff; 
+  color: #7e22ce; 
+  border-left: 4px solid #a855f7;
+}
+
+
+.calendar-event--confirmada {
+  background-color: #dcfce7; 
+  color: #15803d; 
+  border-left: 4px solid #22c55e;
+}
+
 @media (max-width: 600px) {
   .calendar-confirm .calendar-modal__actions {
     display: grid;
