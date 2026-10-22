@@ -16,12 +16,11 @@ public class CitaEntity {
     private Integer idSala;
     private String folio;
     private String estado;
+    private String notas;
 
-    // Esta anotación evita que Hibernate envíe null y permite a MySQL usar DEFAULT CURRENT_TIMESTAMP
     @Column(insertable = false, updatable = false)
     private LocalDateTime fechaCreacion;
 
-    // Getters y Setters
     public Integer getIdCita() { return idCita; }
     public void setIdCita(Integer idCita) { this.idCita = idCita; }
 
@@ -39,6 +38,9 @@ public class CitaEntity {
 
     public String getEstado() { return estado; }
     public void setEstado(String estado) { this.estado = estado; }
+
+    public String getNotas() { return notas; }
+    public void setNotas(String notas) { this.notas = notas; }
 
     public LocalDateTime getFechaCreacion() { return fechaCreacion; }
     public void setFechaCreacion(LocalDateTime fechaCreacion) { this.fechaCreacion = fechaCreacion; }

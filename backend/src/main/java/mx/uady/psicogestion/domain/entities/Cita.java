@@ -9,6 +9,7 @@ public class Cita {
     private Integer idSala;
     private String folio;
     private EstadoCitaEnum estado;
+    private String notas;
 
     public Cita() {
         this.estado = EstadoCitaEnum.PENDIENTE; // Estado inicial por defecto
@@ -32,10 +33,12 @@ public class Cita {
     public EstadoCitaEnum getEstado() { return estado; }
     public void setEstado(EstadoCitaEnum estado) { this.estado = estado; }
 
-    // --- Reglas de Negocio Empresariales ---
+    public String getNotas() { return notas; }
+    public void setNotas(String notas) { this.notas = notas; }
+
+
     public void generarFolioUnico() {
         if (this.folio == null || this.folio.trim().isEmpty()) {
-            // Genera un folio alfanumérico único de 8 caracteres
             this.folio = UUID.randomUUID().toString().substring(0, 8).toUpperCase();
         }
     }
