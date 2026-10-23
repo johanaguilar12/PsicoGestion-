@@ -13,3 +13,5 @@ backend/mvnw.cmd
 .env
 .DS_Store
 backend/src/main/resources/application-local.properties
+frontend.txt
+*.log
