@@ -12,3 +12,4 @@ backend/mvnw.cmd
 # Entornos y SO
 .env
 .DS_Store
+backend/src/main/resources/application-local.properties
