@@ -1,0 +1,10 @@
+export const parseDate = (key) => { const [y, m, d] = key.split('-').map(Number); return new Date(y, m - 1, d); };
+export const dateKey = (date) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+export const addDays = (date, days) => { const result = new Date(date); result.setDate(result.getDate() + days); return result; };
+export const weekStart = (date) => addDays(date, -date.getDay());
+export const monthStart = (date) => new Date(date.getFullYear(), date.getMonth(), 1);
+export const formatTime = (time) => { const [hours, minutes] = time.split(':').map(Number); return `${hours % 12 || 12}:${String(minutes).padStart(2, '0')} ${hours < 12 ? 'a.m.' : 'p.m.'}`; };
+export const addMinutes = (time, minutes) => { const [h, m] = time.split(':').map(Number); const total = h * 60 + m + minutes; return `${String(Math.floor(total / 60)).padStart(2, '0')}:${String(total % 60).padStart(2, '0')}`; };
+export const longDate = (date) => new Intl.DateTimeFormat('es-MX', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' }).format(date);
+export const shortWeekday = (date) => new Intl.DateTimeFormat('es-MX', { weekday: 'short' }).format(date).replace('.', '');
+export const slots = Array.from({ length: 24 }, (_, i) => `${String(7 + Math.floor(i / 2)).padStart(2, '0')}:${i % 2 ? '30' : '00'}`);
