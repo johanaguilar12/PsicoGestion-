@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Info } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
+import { apiFetch } from "../services/api";
 import Breadcrumb from "../components/forms/Breadcrumb";
 
 function EditarSalaPage() {
@@ -14,7 +15,7 @@ function EditarSalaPage() {
   useEffect(() => {
     const cargarDatos = async () => {
       try {
-        const response = await fetch(`http://localhost:8081/api/v1/salas/${roomId}`);
+        const response = await apiFetch(`http://localhost:8081/api/v1/salas/${roomId}`);
         if (response.ok) {
           const data = await response.json();
           setNombre(data.nombreSala);
@@ -35,7 +36,7 @@ function EditarSalaPage() {
     const payload = { idSala: roomId, nombreSala: nombre };
 
     try {
-      const response = await fetch(`http://localhost:8081/api/v1/salas/${roomId}`, {
+      const response = await apiFetch(`http://localhost:8081/api/v1/salas/${roomId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { apiFetch } from "../services/api";
 
 import ActionsMenu from "../components/data-list/ActionsMenu";
 import ConfirmDialog from "../components/data-list/ConfirmDialog";
@@ -39,7 +40,7 @@ function PacienteDetallePage() {
   useEffect(() => {
     const cargarDetallePaciente = async () => {
       try {
-        const response = await fetch(`http://localhost:8081/api/v1/pacientes/${patientId}`);
+        const response = await apiFetch(`http://localhost:8081/api/v1/pacientes/${patientId}`);
         if (response.ok) {
           const data = await response.json();
           
@@ -74,7 +75,7 @@ function PacienteDetallePage() {
    
   const handleToggleStatus = async () => {
     try {
-      const response = await fetch(`http://localhost:8081/api/v1/pacientes/${patientId}/baja`, {
+      const response = await apiFetch(`http://localhost:8081/api/v1/pacientes/${patientId}/baja`, {
         method: "PUT",
       });
 
@@ -155,7 +156,7 @@ function PacienteDetallePage() {
         danger
         onConfirm={async () => {
           try {
-            const response = await fetch(`http://localhost:8081/api/v1/pacientes/${patientId}`, {
+            const response = await apiFetch(`http://localhost:8081/api/v1/pacientes/${patientId}`, {
               method: "DELETE",
             });
 

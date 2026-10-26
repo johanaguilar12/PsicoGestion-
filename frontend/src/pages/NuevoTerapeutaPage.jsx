@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { apiFetch } from "../services/api";
 import CreateFormPage from "../components/forms/CreateFormPage";
 import FormField from "../components/forms/FormField";
 import PhotoUpload from "../components/forms/PhotoUpload";
@@ -29,7 +30,7 @@ function NuevoTerapeutaPage() {
 
     try {
       
-      const response = await fetch("http://localhost:8081/api/v1/terapeutas", {
+      const response = await apiFetch("http://localhost:8081/api/v1/terapeutas", {
         method: "POST",
         body: formData,
       });

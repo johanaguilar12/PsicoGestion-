@@ -1,5 +1,6 @@
 import "../styles/home.css";
 import { useState, useEffect, useCallback } from "react";
+import { apiFetch } from "../services/api";
 import { ArrowRight, CalendarDays, CalendarPlus, CheckCircle2, Clock3, UserPlus } from "lucide-react";
 import { Link } from "react-router-dom";
 import { dateKey, formatTime, parseDate, addMinutes } from '../components/calendar/dateUtils';
@@ -48,10 +49,10 @@ function InicioPage() {
     const fetchData = async () => {
       try {
         const [citasRes, pacRes, terRes, salRes] = await Promise.all([
-          fetch("http://localhost:8081/api/v1/citas/detalles"),
-          fetch("http://localhost:8081/api/v1/pacientes"),
-          fetch("http://localhost:8081/api/v1/terapeutas"),
-          fetch("http://localhost:8081/api/v1/salas")
+          apiFetch("http://localhost:8081/api/v1/citas/detalles"),
+          apiFetch("http://localhost:8081/api/v1/pacientes"),
+          apiFetch("http://localhost:8081/api/v1/terapeutas"),
+          apiFetch("http://localhost:8081/api/v1/salas")
         ]);
 
         if (salRes.ok) setSalas(await salRes.json());
@@ -143,7 +144,7 @@ function InicioPage() {
     };
 
     try {
-      const response = await fetch(`http://localhost:8081/api/v1/citas/${item.id}`, {
+      const response = await apiFetch(`http://localhost:8081/api/v1/citas/${item.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
@@ -155,7 +156,7 @@ function InicioPage() {
 
   const remove = async (id) => { 
     try {
-      const response = await fetch(`http://localhost:8081/api/v1/citas/${id}/cancelar`, { method: "PUT" });
+      const response = await apiFetch(`http://localhost:8081/api/v1/citas/${id}/cancelar`, { method: "PUT" });
       if (response.ok) window.location.reload(); 
     } catch (error) { console.error("Error al cancelar:", error); }
   };

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { apiFetch } from "../services/api";
 import DataListPage from "../components/data-list/DataListPage";
 import "../styles/data-list.css";
 
@@ -19,7 +20,7 @@ function TerapeutasPage() {
   useEffect(() => {
     const cargarTerapeutas = async () => {
       try {
-        const response = await fetch("http://localhost:8081/api/v1/terapeutas");
+        const response = await apiFetch("http://localhost:8081/api/v1/terapeutas");
         if (response.ok) {
           const data = await response.json();
           const terapeutasFormateados = data.map(terapeuta => ({
@@ -43,7 +44,7 @@ function TerapeutasPage() {
 
   const handleStatusChange = async (terapeuta) => {
     try {
-      const response = await fetch(`http://localhost:8081/api/v1/terapeutas/${terapeuta.id}/baja`, {
+      const response = await apiFetch(`http://localhost:8081/api/v1/terapeutas/${terapeuta.id}/baja`, {
         method: "PUT",
       });
       return response.ok;
@@ -55,7 +56,7 @@ function TerapeutasPage() {
 
   const handleDelete = async (terapeuta) => {
     try {
-      const response = await fetch(`http://localhost:8081/api/v1/terapeutas/${terapeuta.id}`, {
+      const response = await apiFetch(`http://localhost:8081/api/v1/terapeutas/${terapeuta.id}`, {
         method: "DELETE",
       });
       return response.ok;

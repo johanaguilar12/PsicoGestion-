@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { apiFetch } from "../services/api";
 import DataListPage from "../components/data-list/DataListPage";
 import "../styles/data-list.css";
 
@@ -19,7 +20,7 @@ function PacientesPage() {
   useEffect(() => {
     const cargarPacientes = async () => {
       try {
-        const response = await fetch("http://localhost:8081/api/v1/pacientes");
+        const response = await apiFetch("http://localhost:8081/api/v1/pacientes");
         if (response.ok) {
           const data = await response.json();
           
@@ -48,7 +49,7 @@ function PacientesPage() {
   
   const handleStatusChange = async (paciente) => {
     try {
-      const response = await fetch(`http://localhost:8081/api/v1/pacientes/${paciente.id}/baja`, {
+      const response = await apiFetch(`http://localhost:8081/api/v1/pacientes/${paciente.id}/baja`, {
         method: "PUT",
       });
       if (response.ok) return true;
@@ -64,7 +65,7 @@ function PacientesPage() {
   
   const handleDelete = async (paciente) => {
     try {
-      const response = await fetch(`http://localhost:8081/api/v1/pacientes/${paciente.id}`, {
+      const response = await apiFetch(`http://localhost:8081/api/v1/pacientes/${paciente.id}`, {
         method: "DELETE",
       });
       if (response.ok) return true;

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { X } from "lucide-react";
 import {
   NavLink,
@@ -6,16 +7,10 @@ import {
 } from "react-router-dom";
 
 import { navigationItems } from "../../config/navigation";
+import { useAuth } from "../auth/authContext.js";
 
 import Brand from "./Brand";
 import UserProfile from "./UserProfile";
-
-const currentUser = {
-  id: 1,
-  name: "Celia Díaz",
-  role: "Administrador",
-  photo: null,
-};
 
 function Sidebar({
   isOpen,
@@ -23,8 +18,10 @@ function Sidebar({
 }) {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user, logout } = useAuth();
+  const [logoutError, setLogoutError] = useState("");
 
-  const currentUserPath = `/usuarios/${currentUser.id}`;
+  const currentUserPath = `/usuarios/${user.id}`;
 
   const isCurrentUserProfile =
     location.pathname === currentUserPath;
@@ -34,12 +31,21 @@ function Sidebar({
     navigate(currentUserPath);
   };
 
-  const handleLogout = () => {
-    onClose();
+  const handleLogout = async () => {
+    setLogoutError("");
+    try {
+      await logout();
+      onClose();
+    } catch {
+      setLogoutError("No se pudo cerrar la sesión. Inténtalo de nuevo.");
+    }
+  };
 
-    navigate("/login", {
-      replace: true,
-    });
+  const currentUser = {
+    id: user.id,
+    name: user.nombreCompleto,
+    role: user.rol ?? "Usuario",
+    photo: user.fotoPerfil,
   };
 
   return (
@@ -112,6 +118,7 @@ function Sidebar({
         onProfileClick={handleProfileClick}
         onLogout={handleLogout}
       />
+      {logoutError && <p role="alert" className="sidebar__error">{logoutError}</p>}
     </aside>
   );
 }
