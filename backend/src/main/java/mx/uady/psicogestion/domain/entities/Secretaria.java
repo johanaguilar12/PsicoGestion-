@@ -1,5 +1,6 @@
 package mx.uady.psicogestion.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.time.LocalDateTime;
 
 public class Secretaria {
@@ -32,6 +33,7 @@ public class Secretaria {
     public String getCorreoElectronico() { return correoElectronico; }
     public void setCorreoElectronico(String correoElectronico) { this.correoElectronico = correoElectronico; }
 
+    @JsonIgnore
     public String getContrasena() { return contrasena; }
     public void setContrasena(String contrasena) { this.contrasena = contrasena; }
 

@@ -13,6 +13,9 @@ public interface JpaSecretariaRepository extends JpaRepository<SecretariaEntity,
     Optional<SecretariaEntity> findByCorreoElectronico(String correoElectronico);
     Optional<SecretariaEntity> findByTelefono(String telefono);
 
+    @Query("SELECT s FROM SecretariaEntity s WHERE LOWER(s.correoElectronico) = LOWER(:identificador) OR s.telefono = :identificador")
+    Optional<SecretariaEntity> findByIdentificador(@Param("identificador") String identificador);
+
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Transactional
     @Query("UPDATE SecretariaEntity s SET s.activo = CASE WHEN s.activo = true THEN false ELSE true END WHERE s.idSecretaria = :id")
