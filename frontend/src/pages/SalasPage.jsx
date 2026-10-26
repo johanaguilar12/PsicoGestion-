@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { apiFetch } from "../services/api";
 import DataListPage from "../components/data-list/DataListPage";
 import "../styles/data-list.css";
 
@@ -16,7 +17,7 @@ function SalasPage() {
   useEffect(() => {
     const cargarSalas = async () => {
       try {
-        const response = await fetch("http://localhost:8081/api/v1/salas");
+        const response = await apiFetch("http://localhost:8081/api/v1/salas");
         if (response.ok) {
           const data = await response.json();
           const salasFormateadas = data.map(sala => ({
@@ -37,7 +38,7 @@ function SalasPage() {
 
   const handleDelete = async (sala) => {
     try {
-      const response = await fetch(`http://localhost:8081/api/v1/salas/${sala.id}`, {
+      const response = await apiFetch(`http://localhost:8081/api/v1/salas/${sala.id}`, {
         method: "DELETE",
       });
       return response.ok;

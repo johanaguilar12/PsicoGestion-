@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { apiFetch } from "../services/api";
 import DataListPage from "../components/data-list/DataListPage";
 import "../styles/data-list.css";
 
@@ -19,7 +20,7 @@ function UsuariosPage() {
   useEffect(() => {
     const cargarUsuarios = async () => {
       try {
-        const response = await fetch("http://localhost:8081/api/v1/cuentas");
+        const response = await apiFetch("http://localhost:8081/api/v1/cuentas");
         if (response.ok) {
           const data = await response.json();
           const usuariosFormateados = data.map(user => ({
@@ -43,7 +44,7 @@ function UsuariosPage() {
 
   const handleStatusChange = async (user) => {
     try {
-      const response = await fetch(`http://localhost:8081/api/v1/cuentas/${user.id}/baja`, { method: "PUT" });
+      const response = await apiFetch(`http://localhost:8081/api/v1/cuentas/${user.id}/baja`, { method: "PUT" });
       return response.ok;
     } catch (error) {
       console.error("Error de red al cambiar estatus:", error);
@@ -53,7 +54,7 @@ function UsuariosPage() {
 
   const handleDelete = async (user) => {
     try {
-      const response = await fetch(`http://localhost:8081/api/v1/cuentas/${user.id}`, { method: "DELETE" });
+      const response = await apiFetch(`http://localhost:8081/api/v1/cuentas/${user.id}`, { method: "DELETE" });
       return response.ok;
     } catch (error) {
       console.error("Error de red al eliminar:", error);

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Info } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
+import { apiFetch } from "../services/api";
 
 import Breadcrumb from "../components/forms/Breadcrumb";
 import FormField from "../components/forms/FormField";
@@ -25,7 +26,7 @@ function EditarPacientePage() {
   useEffect(() => {
     const cargarPaciente = async () => {
       try {
-        const response = await fetch(`http://localhost:8081/api/v1/pacientes/${patientId}`);
+        const response = await apiFetch(`http://localhost:8081/api/v1/pacientes/${patientId}`);
         if (response.ok) {
           const data = await response.json();
           setFormData({
@@ -73,7 +74,7 @@ function EditarPacientePage() {
 
     try {
       
-      const response = await fetch(`http://localhost:8081/api/v1/pacientes/${patientId}`, {
+      const response = await apiFetch(`http://localhost:8081/api/v1/pacientes/${patientId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

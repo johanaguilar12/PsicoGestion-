@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { apiFetch } from "../services/api";
 
 import ActionsMenu from "../components/data-list/ActionsMenu";
 import ConfirmDialog from "../components/data-list/ConfirmDialog";
@@ -32,7 +33,7 @@ function SalaDetallePage() {
   useEffect(() => {
     const cargarDetalle = async () => {
       try {
-        const response = await fetch(`http://localhost:8081/api/v1/salas/${roomId}`);
+        const response = await apiFetch(`http://localhost:8081/api/v1/salas/${roomId}`);
         if (response.ok) {
           const data = await response.json();
           setSala({
@@ -96,7 +97,7 @@ function SalaDetallePage() {
         confirmLabel="Eliminar"
         danger
         onConfirm={async () => {
-          await fetch(`http://localhost:8081/api/v1/salas/${roomId}`, { method: "DELETE" });
+          await apiFetch(`http://localhost:8081/api/v1/salas/${roomId}`, { method: "DELETE" });
           navigate("/salas");
         }}
         onCancel={() => setConfirmDelete(false)}
