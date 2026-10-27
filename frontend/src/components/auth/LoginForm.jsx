@@ -5,7 +5,7 @@ import {
   LockKeyhole,
   Mail,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { API_BASE_URL, apiFetch } from "../../services/api";
 
 function LoginForm() {
@@ -154,12 +154,12 @@ function LoginForm() {
             </button>
           </div>
 
-          <a
-            href="/recuperar-contrasena"
+          <Link
+            to="/recuperar-contrasena"
             className="login-form__forgot"
           >
             ¿Olvidaste tu contraseña?
-          </a>
+          </Link>
         </div>
       </div>
 

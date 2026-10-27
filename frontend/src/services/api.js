@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8081";
+const API_BASE_URL = import.meta.env.VITE_API_URL ?? "";
 
 let csrfToken;
 
@@ -19,8 +19,9 @@ async function getCsrfToken() {
 function resolveApiUrl(input) {
   if (input instanceof Request) return input;
 
-  const requestUrl = new URL(input, API_BASE_URL);
-  if (requestUrl.pathname.startsWith("/api/v1/")) {
+  const baseUrl = API_BASE_URL || window.location.origin;
+  const requestUrl = new URL(input, baseUrl);
+  if (API_BASE_URL && requestUrl.pathname.startsWith("/api/v1/")) {
     const apiUrl = new URL(API_BASE_URL);
     requestUrl.protocol = apiUrl.protocol;
     requestUrl.host = apiUrl.host;

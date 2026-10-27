@@ -16,6 +16,8 @@ import NuevoTerapeutaPage from "../pages/NuevoTerapeutaPage";
 import NuevoUsuarioPage from "../pages/NuevoUsuarioPage";
 import PacienteDetallePage from "../pages/PacienteDetallePage";
 import PacientesPage from "../pages/PacientesPage";
+import PasswordRecoveryPage from "../pages/PasswordRecoveryPage";
+import PasswordResetPage from "../pages/PasswordResetPage";
 import SalaDetallePage from "../pages/SalaDetallePage";
 import SalasPage from "../pages/SalasPage";
 import TerapeutaDetallePage from "../pages/TerapeutaDetallePage";
@@ -27,6 +29,8 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/recuperar-contrasena" element={<PasswordRecoveryPage />} />
+      <Route path="/restablecer-contrasena" element={<PasswordResetPage />} />
 
       <Route element={<AuthGate />}>
         <Route element={<AppLayout />}>
