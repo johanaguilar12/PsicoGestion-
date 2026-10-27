@@ -2,6 +2,7 @@ package mx.uady.psicogestion.presentation.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,6 +19,7 @@ import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
+@EnableAsync
 public class SecurityConfig {
 
     @Bean
@@ -36,6 +38,8 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/api/v1/auth/login",
                                 "/api/v1/auth/csrf",
+                                "/api/v1/auth/password-reset/request",
+                                "/api/v1/auth/password-reset/confirm",
                                 "/api/v1/cuentas/registro",
                                 "/uploads/**",
                                 "/error"

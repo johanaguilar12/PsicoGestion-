@@ -26,7 +26,7 @@ El repositorio está organizado físicamente para garantizar la separación de r
 * Node.js y npm instalados.
 * Java Development Kit (JDK) 17.
 * Maven.
-* MySQL Server ejecutándose localmente.
+* Acceso a la base de datos MySQL-compatible de TiDB Cloud.
 
 ### Frontend
 1. Navegar a la carpeta del frontend: `cd frontend`
@@ -36,6 +36,13 @@ El repositorio está organizado físicamente para garantizar la separación de r
 ### Backend
 1. Navegar a la carpeta del backend: `cd backend`
 2. Ejecutar la aplicación con Maven: `./mvnw spring-boot:run`
+
+### Recuperación de contraseña (backend)
+Antes de habilitar el flujo, ejecuta `backend/src/main/resources/db/password-reset-schema.sql` en la base de TiDB que contiene la tabla `secretaria`.
+
+Configura el envío por Gmail con las variables de entorno `MAIL_USERNAME`, `MAIL_PASSWORD` (contraseña de aplicación), `MAIL_FROM` y `FRONTEND_BASE_URL` (origen del frontend, por ejemplo `http://localhost:5173`). Para desarrollo local, también puedes definirlas en `backend/src/main/resources/application-local.properties`, que está ignorado por Git; en producción usa las variables del proveedor de despliegue y no subas credenciales al repositorio.
+
+El backend expone `POST /api/v1/auth/password-reset/request` con `{"email":"cuenta@correo.uady.mx"}` y `POST /api/v1/auth/password-reset/confirm` con `{"token":"...","newPassword":"..."}`. Los enlaces duran 30 minutos, son de un solo uso y la solicitud devuelve el mismo mensaje exista o no la cuenta. La contraseña nueva debe tener entre 8 y 25 caracteres, una mayúscula, un número y un carácter especial.
 
 ## Equipo de Desarrollo
 **Linea Base 2000**
