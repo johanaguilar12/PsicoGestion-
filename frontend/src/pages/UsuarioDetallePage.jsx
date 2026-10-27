@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { apiFetch } from "../services/api";
 
 import ActionsMenu from "../components/data-list/ActionsMenu";
 import ConfirmDialog from "../components/data-list/ConfirmDialog";
@@ -32,7 +33,7 @@ function UsuarioDetallePage() {
   useEffect(() => {
     const cargarDetalle = async () => {
       try {
-        const response = await fetch(`http://localhost:8081/api/v1/cuentas/${userId}`);
+        const response = await apiFetch(`http://localhost:8081/api/v1/cuentas/${userId}`);
         if (response.ok) {
           const data = await response.json();
           setUsuario({
@@ -63,7 +64,7 @@ function UsuarioDetallePage() {
 
   const handleToggleStatus = async () => {
     try {
-      const response = await fetch(`http://localhost:8081/api/v1/cuentas/${userId}/baja`, { method: "PUT" });
+      const response = await apiFetch(`http://localhost:8081/api/v1/cuentas/${userId}/baja`, { method: "PUT" });
       if (response.ok) {
         setUsuario((current) => ({ 
             ...current, 
@@ -126,7 +127,7 @@ function UsuarioDetallePage() {
         confirmLabel="Eliminar"
         danger
         onConfirm={async () => {
-          await fetch(`http://localhost:8081/api/v1/cuentas/${userId}`, { method: "DELETE" });
+          await apiFetch(`http://localhost:8081/api/v1/cuentas/${userId}`, { method: "DELETE" });
           navigate("/usuarios");
         }}
         onCancel={() => setConfirmDelete(false)}

@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 
 import AppLayout from "../components/layout/AppLayout";
+import AuthGate from "../components/auth/AuthGate";
 
 import AgendaPage from "../pages/AgendaPage";
 import EditarPacientePage from "../pages/EditarPacientePage";
@@ -27,7 +28,8 @@ function AppRoutes() {
     <Routes>
       <Route path="/login" element={<LoginPage />} />
 
-      <Route element={<AppLayout />}>
+      <Route element={<AuthGate />}>
+        <Route element={<AppLayout />}>
         <Route index element={<InicioPage />} />
 
         <Route path="agenda" element={<AgendaPage />} />
@@ -82,6 +84,7 @@ function AppRoutes() {
           path="usuarios/:userId/editar"
           element={<EditarUsuarioPage />}
         />
+        </Route>
       </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />

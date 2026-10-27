@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { apiFetch } from "../services/api";
 import CreateFormPage from "../components/forms/CreateFormPage";
 import FormField from "../components/forms/FormField";
 
@@ -25,7 +26,7 @@ function NuevoPacientePage() {
 
       console.log("Paso 2: Datos listos para enviar:", pacienteData);
 
-      const response = await fetch("http://localhost:8081/api/v1/pacientes", {
+      const response = await apiFetch("http://localhost:8081/api/v1/pacientes", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

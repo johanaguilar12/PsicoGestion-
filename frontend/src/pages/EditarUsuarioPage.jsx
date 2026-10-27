@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Eye, EyeOff, Info } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
+import { apiFetch } from "../services/api";
 
 import Breadcrumb from "../components/forms/Breadcrumb";
 
@@ -27,7 +28,7 @@ function EditarUsuarioPage() {
   useEffect(() => {
     const cargarUsuario = async () => {
       try {
-        const response = await fetch(`http://localhost:8081/api/v1/cuentas/${userId}`);
+        const response = await apiFetch(`http://localhost:8081/api/v1/cuentas/${userId}`);
         if (response.ok) {
           const data = await response.json();
           setFormData({
@@ -88,7 +89,7 @@ function EditarUsuarioPage() {
     }
 
     try {
-      const response = await fetch(`http://localhost:8081/api/v1/cuentas/${userId}`, {
+      const response = await apiFetch(`http://localhost:8081/api/v1/cuentas/${userId}`, {
         method: "PUT",
         body: payload,
       });

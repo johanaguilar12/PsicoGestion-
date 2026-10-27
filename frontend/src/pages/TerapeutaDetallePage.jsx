@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { apiFetch } from "../services/api";
 
 import ActionsMenu from "../components/data-list/ActionsMenu";
 import ConfirmDialog from "../components/data-list/ConfirmDialog";
@@ -32,7 +33,7 @@ function TerapeutaDetallePage() {
   useEffect(() => {
     const cargarDetalle = async () => {
       try {
-        const response = await fetch(`http://localhost:8081/api/v1/terapeutas/${therapistId}`);
+        const response = await apiFetch(`http://localhost:8081/api/v1/terapeutas/${therapistId}`);
         if (response.ok) {
           const data = await response.json();
           setTerapeuta({
@@ -64,7 +65,7 @@ function TerapeutaDetallePage() {
   // 🚨 Función modificada: Alterna entre Activo e Inactivo dinámicamente
   const handleToggleStatus = async () => {
     try {
-      const response = await fetch(`http://localhost:8081/api/v1/terapeutas/${therapistId}/baja`, { method: "PUT" });
+      const response = await apiFetch(`http://localhost:8081/api/v1/terapeutas/${therapistId}/baja`, { method: "PUT" });
       if (response.ok) {
         setTerapeuta((current) => ({ 
             ...current, 
@@ -127,7 +128,7 @@ function TerapeutaDetallePage() {
         confirmLabel="Eliminar"
         danger
         onConfirm={async () => {
-          await fetch(`http://localhost:8081/api/v1/terapeutas/${therapistId}`, { method: "DELETE" });
+          await apiFetch(`http://localhost:8081/api/v1/terapeutas/${therapistId}`, { method: "DELETE" });
           navigate("/terapeutas");
         }}
         onCancel={() => setConfirmDelete(false)}
