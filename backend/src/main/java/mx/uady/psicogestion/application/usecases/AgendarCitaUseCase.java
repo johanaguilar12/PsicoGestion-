@@ -24,8 +24,9 @@ public class AgendarCitaUseCase {
     public Cita ejecutar(Cita cita, BloqueHorario horario, String correoPaciente, String telefonoPaciente) {
         if (!horario.validarRangoOperativo()) throw new IllegalArgumentException("El rango de horario operativo es inválido.");
 
-        boolean hayColision = citaRepository.buscarColisiones(cita.getIdTerapeuta(), cita.getIdSala(), horario.getFecha(), horario.getHoraInicio(), horario.getHoraFin());
-        if (hayColision) throw new IllegalStateException("Horario ocupado. Existe una colisión para el terapeuta o la sala.");
+        
+        boolean hayColision = citaRepository.buscarColisiones(cita.getIdTerapeuta(), cita.getIdSala(), cita.getIdPaciente(), horario.getFecha(), horario.getHoraInicio(), horario.getHoraFin(), -1);
+        if (hayColision) throw new IllegalStateException("Horario ocupado. Existe una colisión para el paciente, terapeuta o la sala.");
 
         cita.generarFolioUnico();
         Cita citaGuardada = citaRepository.guardar(cita, horario);
@@ -36,6 +37,10 @@ public class AgendarCitaUseCase {
 
     public Cita modificar(Integer idCita, Cita datosNuevos, BloqueHorario nuevoHorario) {
         if (!nuevoHorario.validarRangoOperativo()) throw new IllegalArgumentException("El rango de horario operativo es inválido.");
+
+        // NUEVO: Verificamos colisión durante la edición, excluyendo la cita actual
+        boolean hayColision = citaRepository.buscarColisiones(datosNuevos.getIdTerapeuta(), datosNuevos.getIdSala(), datosNuevos.getIdPaciente(), nuevoHorario.getFecha(), nuevoHorario.getHoraInicio(), nuevoHorario.getHoraFin(), idCita);
+        if (hayColision) throw new IllegalStateException("Horario ocupado. No se puede reagendar porque choca con otra cita existente.");
 
         Cita existente = citaRepository.buscarPorId(idCita).orElseThrow(() -> new IllegalArgumentException("Cita no encontrada"));
 

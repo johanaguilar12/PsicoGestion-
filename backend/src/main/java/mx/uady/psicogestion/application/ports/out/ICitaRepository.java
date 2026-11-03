@@ -11,11 +11,11 @@ import java.util.Optional;
 
 public interface ICitaRepository {
     Cita guardar(Cita cita, BloqueHorario horario);
-    boolean buscarColisiones(Integer idTerapeuta, Integer idSala, LocalDate fecha, LocalTime horaInicio, LocalTime horaFin);
+    boolean buscarColisiones(Integer idTerapeuta, Integer idSala, Integer idPaciente, LocalDate fecha, LocalTime horaInicio, LocalTime horaFin, Integer idCitaExcluida);
     Optional<Cita> buscarPorFolio(String folio);
     Optional<Cita> buscarPorId(Integer idCita);
     Cita actualizar(Cita cita);
     List<Cita> obtenerTodas();
-    List<Map<String, Object>> obtenerTodasConDetalles(); // Proyección con nombres para el frontend
+    List<Map<String, Object>>  obtenerTodasConDetalles();
     void cambiarEstado(Integer idCita, EstadoCitaEnum estado);
 }

@@ -72,6 +72,9 @@ public class CitaController {
 
             Cita modificada = agendarCitaUseCase.modificar(id, cita, horario);
             return new ResponseEntity<>(modificada, HttpStatus.OK);
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            // NUEVO: Atrapamos la colisión y mandamos conflicto 409
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
