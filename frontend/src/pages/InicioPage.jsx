@@ -1,7 +1,6 @@
 import "../styles/home.css";
 import { useState, useEffect, useCallback } from "react";
-import { apiFetch } from "../services/api";
-import { ArrowRight, CalendarDays, CalendarPlus, CheckCircle2, Clock3, UserPlus } from "lucide-react";
+import { ArrowRight, CalendarDays, CalendarPlus, CheckCircle2, Clock3, UserPlus, Search } from "lucide-react";
 import { Link } from "react-router-dom";
 import { dateKey, formatTime, parseDate, addMinutes } from '../components/calendar/dateUtils';
 import AppointmentDialog from '../components/calendar/AppointmentDialog';
@@ -33,8 +32,9 @@ const getId = (obj, type) => obj?.[`id${type}`] || obj?.[`id_${type.toLowerCase(
 function InicioPage() {
   const [stats, setStats] = useState({ total: 0, confirmadas: 0, pendientes: 0 });
   const [nextAppointments, setNextAppointments] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
   
-  // Estados para el Modal
+  
   const [appointments, setAppointments] = useState([]);
   const [pacientes, setPacientes] = useState([]);
   const [terapeutas, setTerapeutas] = useState([]);
@@ -49,10 +49,10 @@ function InicioPage() {
     const fetchData = async () => {
       try {
         const [citasRes, pacRes, terRes, salRes] = await Promise.all([
-          apiFetch("http://localhost:8081/api/v1/citas/detalles"),
-          apiFetch("http://localhost:8081/api/v1/pacientes"),
-          apiFetch("http://localhost:8081/api/v1/terapeutas"),
-          apiFetch("http://localhost:8081/api/v1/salas")
+          fetch("http://localhost:8081/api/v1/citas/detalles"),
+          fetch("http://localhost:8081/api/v1/pacientes"),
+          fetch("http://localhost:8081/api/v1/terapeutas"),
+          fetch("http://localhost:8081/api/v1/salas")
         ]);
 
         if (salRes.ok) setSalas(await salRes.json());
@@ -75,6 +75,7 @@ function InicioPage() {
 
             return {
               id: c.id_cita,
+              folio: c.folio || '',
               patient: getPersonName({ nombreCompleto: c.paciente }),
               therapist: getPersonName({ nombreCompleto: c.terapeuta }),
               room: getRoomName({ nombreSala: c.sala }),
@@ -144,7 +145,7 @@ function InicioPage() {
     };
 
     try {
-      const response = await apiFetch(`http://localhost:8081/api/v1/citas/${item.id}`, {
+      const response = await fetch(`http://localhost:8081/api/v1/citas/${item.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
@@ -156,9 +157,28 @@ function InicioPage() {
 
   const remove = async (id) => { 
     try {
-      const response = await apiFetch(`http://localhost:8081/api/v1/citas/${id}/cancelar`, { method: "PUT" });
+      const response = await fetch(`http://localhost:8081/api/v1/citas/${id}/cancelar`, { method: "PUT" });
       if (response.ok) window.location.reload(); 
     } catch (error) { console.error("Error al cancelar:", error); }
+  };
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (!searchTerm.trim()) return;
+    const term = searchTerm.trim().toLowerCase();
+    
+   
+    const result = appointments.find(c => 
+      (c.folio && c.folio.toLowerCase() === term) || 
+      (c.patient && c.patient.toLowerCase().includes(term))
+    );
+    
+    if (result) {
+      openDetails(result);
+      setSearchTerm('');
+    } else {
+      alert(`No se encontró ninguna cita activa con el paciente o folio: ${searchTerm}`);
+    }
   };
 
   const todaySummary = [
@@ -195,7 +215,30 @@ function InicioPage() {
       <section className="home-section" aria-labelledby="next-appointment-title">
         <div className="home-section__heading">
           <h2 id="next-appointment-title" className="home-section__title">Próximas citas</h2>
-          <Link to="/agenda" className="home-section__link"><span>Ver agenda</span><ArrowRight size={18} strokeWidth={1.8}/></Link>
+          
+          {}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <form onSubmit={handleSearchSubmit} style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+              <div style={{ position: 'absolute', left: '10px', color: '#64748b' }}>
+                <Search size={16} />
+              </div>
+              <input 
+                type="text" 
+                placeholder="Buscar por paciente o folio..." 
+                value={searchTerm} 
+                onChange={(e) => setSearchTerm(e.target.value)}
+                style={{
+                  padding: '8px 12px 8px 32px',
+                  borderRadius: '6px',
+                  border: '1px solid var(--gray-100)',
+                  fontSize: '14px',
+                  outline: 'none',
+                  minWidth: '220px'
+                }}
+              />
+            </form>
+            <Link to="/agenda" className="home-section__link"><span>Ver agenda</span><ArrowRight size={18} strokeWidth={1.8}/></Link>
+          </div>
         </div>
         
         {nextAppointments.length > 0 ? (
@@ -205,18 +248,28 @@ function InicioPage() {
                 key={appt.id} 
                 className="next-appointment" 
                 onClick={() => openDetails(appt)} 
-                style={{ cursor: 'pointer', transition: 'transform 0.2s' }}
+                style={{ cursor: 'pointer', transition: 'transform 0.2s', borderLeft: appt.status === 'PENDIENTE' ? '4px solid #a855f7' : '4px solid #22c55e' }}
                 onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.01)'}
                 onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
               >
-                <div className="next-appointment__time">
+                <div className="next-appointment__time" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
                   <span className="next-appointment__time-label" style={{ textTransform: 'capitalize' }}>{formatRelativeDate(appt.date, dateKey(new Date()))}</span>
-                  <strong>{formatTime(appt.time)}</strong>
+                  <strong style={{ fontSize: '1.25rem' }}>{formatTime(appt.time)}</strong>
+                 
+                  {appt.status === 'PENDIENTE' && (
+                    <span style={{ backgroundColor: '#f3e8ff', color: '#7e22ce', fontSize: '0.7rem', padding: '3px 6px', borderRadius: '4px', marginTop: '6px', fontWeight: 'bold', letterSpacing: '0.5px' }}>
+                      PENDIENTE
+                    </span>
+                  )}
                 </div>
                 <div className="next-appointment__information">
                   <div className="next-appointment__detail">
                     <span className="next-appointment__label">Paciente</span>
-                    <span className="next-appointment__primary-value">{appt.patient}</span>
+                    <span className="next-appointment__primary-value">
+                      {appt.patient}
+                      
+                      <small style={{ color: '#64748b', fontSize: '0.85em', marginLeft: '8px', fontWeight: 'normal' }}>({appt.folio})</small>
+                    </span>
                   </div>
                   <div className="next-appointment__details">
                     <div className="next-appointment__detail">
@@ -265,8 +318,9 @@ function InicioPage() {
         onSave={save} 
         onDelete={remove} 
         appointments={appointments} 
-        pacientes={pacientes}
-        terapeutas={terapeutas}
+        
+        pacientes={pacientes.filter(p => p.activo !== 0 && p.activo !== false)}
+        terapeutas={terapeutas.filter(t => t.activo !== 0 && t.activo !== false)}
         salas={salas}
       />
     </section>

@@ -94,7 +94,7 @@ public class CitaRepositoryAdapter implements ICitaRepository {
 
     @Override
     public List<Map<String, Object>> obtenerTodasConDetalles() {
-        String sql = "SELECT c.id_cita, c.folio, c.estado, c.notas, " +
+        String sql = "SELECT c.id_cita, c.folio, c.estado, c.notas, c.fecha_creacion, " +
                 "COALESCE(p.nombre_completo, 'Desconocido') as paciente, " +
                 "COALESCE(t.nombre_completo, 'Sin asignar') as terapeuta, " +
                 "COALESCE(s.nombre_sala, 'Sin sala') as sala, " +
