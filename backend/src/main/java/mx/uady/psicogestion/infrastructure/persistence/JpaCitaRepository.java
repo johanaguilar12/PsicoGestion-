@@ -19,16 +19,19 @@ public interface JpaCitaRepository extends JpaRepository<CitaEntity, Integer> {
     @Query(value = "SELECT COUNT(c.id_cita) FROM cita c " +
             "JOIN cita_bloque cb ON c.id_cita = cb.id_cita " +
             "JOIN bloque_horario bh ON cb.id_bloque = bh.id_bloque " +
-            "WHERE (c.id_terapeuta = :idTerapeuta OR c.id_sala = :idSala) " +
+            "WHERE (c.id_terapeuta = :idTerapeuta OR c.id_sala = :idSala OR c.id_paciente = :idPaciente) " +
             "AND bh.fecha = :fecha " +
             "AND (bh.hora_inicio < :horaFin AND bh.hora_fin > :horaInicio) " +
-            "AND c.estado != 'CANCELADA' FOR UPDATE", nativeQuery = true)
+            "AND c.estado != 'CANCELADA' " +
+            "AND c.id_cita != :idCitaExcluida FOR UPDATE", nativeQuery = true)
     long contarColisionesConBloqueoPesimista(
             @Param("idTerapeuta") Integer idTerapeuta,
             @Param("idSala") Integer idSala,
+            @Param("idPaciente") Integer idPaciente,
             @Param("fecha") LocalDate fecha,
             @Param("horaInicio") LocalTime horaInicio,
-            @Param("horaFin") LocalTime horaFin
+            @Param("horaFin") LocalTime horaFin,
+            @Param("idCitaExcluida") Integer idCitaExcluida
     );
 
     @Modifying
