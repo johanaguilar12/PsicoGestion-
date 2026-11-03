@@ -5,6 +5,7 @@ import CalendarGrid from '../components/calendar/CalendarGrid';
 import MobileCalendar from '../components/calendar/MobileCalendar';
 import AppointmentDialog from '../components/calendar/AppointmentDialog';
 import { addDays, addMinutes, dateKey, formatTime, longDate, monthStart, parseDate, weekStart } from '../components/calendar/dateUtils';
+import { apiFetch } from '../services/api';
 import '../styles/forms.css';
 import '../styles/calendar.css';
 
@@ -63,10 +64,10 @@ function AgendaPage() {
     const fetchData = async () => {
       try {
         const [citasRes, pacRes, terRes, salRes] = await Promise.all([
-          fetch("http://localhost:8081/api/v1/citas/detalles"),
-          fetch("http://localhost:8081/api/v1/pacientes"),
-          fetch("http://localhost:8081/api/v1/terapeutas"),
-          fetch("http://localhost:8081/api/v1/salas")
+          apiFetch("http://localhost:8081/api/v1/citas/detalles"),
+          apiFetch("http://localhost:8081/api/v1/pacientes"),
+          apiFetch("http://localhost:8081/api/v1/terapeutas"),
+          apiFetch("http://localhost:8081/api/v1/salas")
         ]);
 
         if (salRes.ok) setSalas(await salRes.json());
@@ -230,7 +231,7 @@ function AgendaPage() {
       const method = item.id ? "PUT" : "POST";
       const url = item.id ? `http://localhost:8081/api/v1/citas/${item.id}` : "http://localhost:8081/api/v1/citas";
       
-      const response = await fetch(url, {
+      const response = await apiFetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
@@ -251,7 +252,7 @@ function AgendaPage() {
 
   const remove = async (id) => { 
     try {
-      const response = await fetch(`http://localhost:8081/api/v1/citas/${id}/cancelar`, { method: "PUT" });
+      const response = await apiFetch(`http://localhost:8081/api/v1/citas/${id}/cancelar`, { method: "PUT" });
       if (response.ok) {
         window.location.reload(); 
       }
