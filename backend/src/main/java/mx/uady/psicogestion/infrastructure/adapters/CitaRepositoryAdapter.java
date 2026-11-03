@@ -1,3 +1,4 @@
+
 package mx.uady.psicogestion.infrastructure.adapters;
 
 import mx.uady.psicogestion.application.ports.out.ICitaRepository;
@@ -67,8 +68,9 @@ public class CitaRepositoryAdapter implements ICitaRepository {
 
     @Override
     @Transactional
-    public boolean buscarColisiones(Integer idTerapeuta, Integer idSala, LocalDate fecha, LocalTime horaInicio, LocalTime horaFin) {
-        long colisiones = jpaRepository.contarColisionesConBloqueoPesimista(idTerapeuta, idSala, fecha, horaInicio, horaFin);
+    public boolean buscarColisiones(Integer idTerapeuta, Integer idSala, Integer idPaciente, LocalDate fecha, LocalTime horaInicio, LocalTime horaFin, Integer idCitaExcluida) {
+        // Se utiliza el idCitaExcluida para no chocar con la misma cita durante una edición
+        long colisiones = jpaRepository.contarColisionesConBloqueoPesimista(idTerapeuta, idSala, idPaciente, fecha, horaInicio, horaFin, idCitaExcluida);
         return colisiones > 0;
     }
 
@@ -94,7 +96,7 @@ public class CitaRepositoryAdapter implements ICitaRepository {
 
     @Override
     public List<Map<String, Object>> obtenerTodasConDetalles() {
-        String sql = "SELECT c.id_cita, c.folio, c.estado, c.notas, c.fecha_creacion, " +
+        String sql = "SELECT c.id_cita, c.folio, c.estado, c.notas, " +
                 "COALESCE(p.nombre_completo, 'Desconocido') as paciente, " +
                 "COALESCE(t.nombre_completo, 'Sin asignar') as terapeuta, " +
                 "COALESCE(s.nombre_sala, 'Sin sala') as sala, " +
