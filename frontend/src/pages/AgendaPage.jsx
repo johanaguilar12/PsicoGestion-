@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight, Filter, Plus, Printer, X } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
-import { apiFetch } from '../services/api';
 import CalendarGrid from '../components/calendar/CalendarGrid';
 import MobileCalendar from '../components/calendar/MobileCalendar';
 import AppointmentDialog from '../components/calendar/AppointmentDialog';
@@ -64,10 +63,10 @@ function AgendaPage() {
     const fetchData = async () => {
       try {
         const [citasRes, pacRes, terRes, salRes] = await Promise.all([
-          apiFetch("http://localhost:8081/api/v1/citas/detalles"),
-          apiFetch("http://localhost:8081/api/v1/pacientes"),
-          apiFetch("http://localhost:8081/api/v1/terapeutas"),
-          apiFetch("http://localhost:8081/api/v1/salas")
+          fetch("http://localhost:8081/api/v1/citas/detalles"),
+          fetch("http://localhost:8081/api/v1/pacientes"),
+          fetch("http://localhost:8081/api/v1/terapeutas"),
+          fetch("http://localhost:8081/api/v1/salas")
         ]);
 
         if (salRes.ok) setSalas(await salRes.json());
@@ -89,7 +88,8 @@ function AgendaPage() {
 
             return {
               id: c.id_cita,
-              folio: c.folio,
+              folio: c.folio || '',
+              fechaCreacion: c.fecha_creacion || null,
               patient: getPersonName({ nombreCompleto: c.paciente }),
               therapist: getPersonName({ nombreCompleto: c.terapeuta }),
               room: getRoomName({ nombreSala: c.sala }),
@@ -230,7 +230,7 @@ function AgendaPage() {
       const method = item.id ? "PUT" : "POST";
       const url = item.id ? `http://localhost:8081/api/v1/citas/${item.id}` : "http://localhost:8081/api/v1/citas";
       
-      const response = await apiFetch(url, {
+      const response = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
@@ -251,7 +251,7 @@ function AgendaPage() {
 
   const remove = async (id) => { 
     try {
-      const response = await apiFetch(`http://localhost:8081/api/v1/citas/${id}/cancelar`, { method: "PUT" });
+      const response = await fetch(`http://localhost:8081/api/v1/citas/${id}/cancelar`, { method: "PUT" });
       if (response.ok) {
         window.location.reload(); 
       }
@@ -271,7 +271,41 @@ function AgendaPage() {
     </div>
     <p className="agenda-page__period">{periodLabel}</p>
     {view !== 'month' && <MobileCalendar view={view} date={date} appointments={visible} onDateChange={setDate} onSelect={openDetails} onCreate={create} />}
-    {view === 'month' ? <div className="calendar-month"><div className="calendar-month__grid">{['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'].map((label, index) => <div className={`calendar-month__weekday${(index === 0 || index === 6) ? ' calendar-month__weekday--closed' : ''}`} key={label}>{label}</div>)}{monthlyDays.map((day, index) => { if (!day) return <div className="calendar-month__day calendar-month__day--empty" key={`blank-${index}`} />; const key = dateKey(day); const items = appointmentsByDate.get(key) || []; return <button type="button" key={key} className={`calendar-month__day${day.getDay() === 0 || day.getDay() === 6 ? ' calendar-month__day--closed' : ''}${key === todayKey ? ' calendar-month__day--today' : ''}`} onClick={() => create(key)}><strong className="calendar-month__date-number">{day.getDate()}</strong>{items.slice(0, 3).map((item) => <span key={item.id} className={`calendar-month__event calendar-event--${item.color || 5}`}>{item.time} {item.patient}</span>)}{items.length > 3 && <small>+{items.length - 3} citas</small>}</button>; })}</div></div> : <CalendarGrid date={date} view={view} appointments={visible} onSelect={openDetails} onCreate={create} />}
+    
+    {view === 'month' ? (
+      <div className="calendar-month">
+        <div className="calendar-month__grid">
+          {['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'].map((label, index) => (
+            <div className={`calendar-month__weekday${(index === 0 || index === 6) ? ' calendar-month__weekday--closed' : ''}`} key={label}>{label}</div>
+          ))}
+          {monthlyDays.map((day, index) => { 
+            if (!day) return <div className="calendar-month__day calendar-month__day--empty" key={`blank-${index}`} />; 
+            const key = dateKey(day); 
+            const items = appointmentsByDate.get(key) || []; 
+            return (
+              <button type="button" key={key} className={`calendar-month__day${day.getDay() === 0 || day.getDay() === 6 ? ' calendar-month__day--closed' : ''}${key === todayKey ? ' calendar-month__day--today' : ''}`} onClick={() => create(key)}>
+                <strong className="calendar-month__date-number">{day.getDate()}</strong>
+                {items.slice(0, 3).map((item) => (
+                  <span 
+                    key={item.id} 
+                    className={`calendar-month__event calendar-event--${item.color || 5}`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      openDetails(item);
+                    }}
+                  >
+                    {item.time} {item.patient}
+                  </span>
+                ))}
+                {items.length > 3 && <small>+{items.length - 3} citas</small>}
+              </button>
+            ); 
+          })}
+        </div>
+      </div>
+    ) : (
+      <CalendarGrid date={date} view={view} appointments={visible} onSelect={openDetails} onCreate={create} />
+    )}
     
     <section className={`agenda-print agenda-print--${printFormat} ${printBlackWhite ? 'agenda-print--black-white' : 'agenda-print--colors'}`} aria-label="Agenda para imprimir">
       <header className="agenda-print__heading"><h2>Agenda</h2><p>{printLabel}</p><span>{printItems.length} citas</span></header>
@@ -338,8 +372,8 @@ function AgendaPage() {
       onSave={save} 
       onDelete={remove} 
       appointments={appointments} 
-      pacientes={pacientes}
-      terapeutas={terapeutas}
+      pacientes={pacientes.filter(p => p.activo !== 0 && p.activo !== false)}
+      terapeutas={terapeutas.filter(t => t.activo !== 0 && t.activo !== false)}
       salas={salas}
     />
   </section>;
