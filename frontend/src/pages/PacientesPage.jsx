@@ -8,7 +8,6 @@ const columns = [
   { key: "name", label: "Nombre" },
   { key: "curp", label: "CURP" },
   { key: "phone", label: "Teléfono" },
-  { key: "email", label: "Correo" },
   { key: "status", label: "Estatus" },
 ];
 
@@ -30,7 +29,6 @@ function PacientesPage() {
               name: paciente.nombreCompleto,
               curp: paciente.curp,
               phone: paciente.telefono,
-              email: "No registrado", 
               status: paciente.activo ? "Activo" : "Inactivo" 
             }));
             setPatients(pacientesFormateados);
@@ -89,13 +87,13 @@ function PacientesPage() {
   return (
     <DataListPage
       title="Pacientes"
-      searchPlaceholder="Buscar por nombre, CURP o correo"
+      searchPlaceholder="Buscar por nombre o CURP"
       createLabel="Nuevo paciente"
       onCreate={() => navigate("/pacientes/nuevo")}
       columns={columns}
       data={patients}
       basePath="/pacientes"
-      searchKeys={["name", "curp", "email"]}
+      searchKeys={["name", "curp"]}
       getMobileFields={(patient) => ({
         title: patient.name,
         details: [`CURP: ${patient.curp}`],

@@ -1,7 +1,17 @@
+
 import RowActions from "./RowActions";
 import StatusBadge from "./StatusBadge";
 
-function DataTable({ columns, data, variant, onView, onEdit, onMenu }) {
+function DataTable({
+  columns,
+  data,
+  variant,
+  onView,
+  onEdit,
+  onMenu,
+  deleteOnly = false,
+  onDelete,
+}) {
   const tableClassName = [
     "data-table",
     variant ? `data-table--${variant}` : "",
@@ -60,6 +70,8 @@ function DataTable({ columns, data, variant, onView, onEdit, onMenu }) {
                   onView={onView}
                   onEdit={onEdit}
                   onMenu={onMenu}
+                  deleteOnly={deleteOnly}
+                  onDelete={onDelete}
                 />
               </td>
             </tr>

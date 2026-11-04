@@ -50,7 +50,6 @@ function PacienteDetallePage() {
             curp: data.curp,
             fechaNacimiento: data.fechaNacimiento,
             sexo: data.sexo === "F" ? "Mujer" : "Hombre",
-            correo: "No registrado", 
             telefono: data.telefono,
             status: data.activo ? "Activo" : "Inactivo",
           });
@@ -129,7 +128,6 @@ function PacienteDetallePage() {
               <DetailField label="CURP" value={paciente.curp} />
               <DetailField label="Fecha de nacimiento" value={paciente.fechaNacimiento} />
               <DetailField label="Sexo" value={paciente.sexo} />
-              <DetailField label="Correo institucional" value={paciente.correo} />
               <DetailField label="Teléfono" value={paciente.telefono} />
               <DetailField label="Estatus" value={paciente.status} />
             </div>

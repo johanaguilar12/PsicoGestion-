@@ -196,7 +196,7 @@ function EditarUsuarioPage() {
                     autoComplete="new-password"
                   />
                   <button type="button" className="form-field__action" onClick={() => setShowNewPassword((current) => !current)}>
-                    {showNewPassword ? <EyeOff size={20} strokeWidth={1.8} /> : <Eye size={20} strokeWidth={1.8} />}
+                    {showNewPassword ? <EyeOff size={24} strokeWidth={1.8} /> : <Eye size={24} strokeWidth={1.8} />}
                   </button>
                 </div>
               </div>
@@ -215,14 +215,14 @@ function EditarUsuarioPage() {
                     autoComplete="new-password"
                   />
                   <button type="button" className="form-field__action" onClick={() => setShowConfirmPassword((current) => !current)}>
-                    {showConfirmPassword ? <EyeOff size={20} strokeWidth={1.8} /> : <Eye size={20} strokeWidth={1.8} />}
+                    {showConfirmPassword ? <EyeOff size={24} strokeWidth={1.8} /> : <Eye size={24} strokeWidth={1.8} />}
                   </button>
                 </div>
               </div>
             </div>
 
             <div className="form-notice">
-              <Info className="form-notice__icon" size={20} strokeWidth={1.8} />
+              <Info className="form-notice__icon" size={24} strokeWidth={1.8} />
               <p>
                 Todos los campos marcados con <strong>*</strong> son obligatorios.<br />
                 Si no deseas cambiar tu contraseña, deja estos campos en blanco.
@@ -230,8 +230,9 @@ function EditarUsuarioPage() {
             </div>
 
             <div className="create-form__actions">
-              <button type="button" className="create-form__button create-form__button--secondary" onClick={() => navigate(`/usuarios/${userId}`)}>Cancelar</button>
+            <button type="button" className="create-form__button create-form__button--secondary" onClick={() => navigate(`/usuarios/${userId}`)}>Cancelar</button>
               <button type="submit" className="create-form__button create-form__button--primary">Guardar cambios</button>
+
             </div>
           </section>
         </div>

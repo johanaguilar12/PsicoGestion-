@@ -176,13 +176,13 @@ function FormField({
             >
               {showPassword ? (
                 <EyeOff
-                  size={20}
+                  size={24}
                   strokeWidth={1.8}
                   aria-hidden="true"
                 />
               ) : (
                 <Eye
-                  size={20}
+                  size={24}
                   strokeWidth={1.8}
                   aria-hidden="true"
                 />

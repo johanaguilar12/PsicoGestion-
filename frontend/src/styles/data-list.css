@@ -775,3 +775,35 @@
     min-height: 48px;
   }
 }
+
+.row-actions__button--delete {
+  color: #b42318;
+  border-radius: 8px;
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.row-actions__button--delete:hover {
+  background-color: #fef3f2;
+  color: #912018;
+}
+
+.row-actions__button--delete:focus-visible {
+  outline: 2px solid #b42318;
+  outline-offset: 2px;
+}
+
+.data-table--rooms th:nth-child(3),
+.data-table--rooms td:nth-child(3) {
+  width: 144px;
+}
+
+
+.data-search__input::-webkit-search-cancel-button,
+.data-search__input::-webkit-search-decoration,
+.data-search__input::-webkit-search-results-button,
+.data-search__input::-webkit-search-results-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+}

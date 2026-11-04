@@ -241,11 +241,11 @@
 .form-field__action {
   position: absolute;
   top: 50%;
-  right: 24px;
+  right: 20px;
   display: grid;
   place-items: center;
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
   padding: 0;
   border: 0;
   border-radius: 8px;
