@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiFetch } from "../services/api";
@@ -6,7 +7,6 @@ import "../styles/data-list.css";
 
 const columns = [
   { key: "name", label: "Nombre de la sala" },
-  { key: "status", label: "Estatus" },
 ];
 
 function SalasPage() {
@@ -18,13 +18,15 @@ function SalasPage() {
     const cargarSalas = async () => {
       try {
         const response = await apiFetch("http://localhost:8081/api/v1/salas");
+
         if (response.ok) {
           const data = await response.json();
-          const salasFormateadas = data.map(sala => ({
+
+          const salasFormateadas = data.map((sala) => ({
             id: sala.idSala,
             name: sala.nombreSala,
-            status: "Libre" // Por RF 4.3.3. Se volverá dinámico con el módulo de Citas
           }));
+
           setRooms(salasFormateadas);
         }
       } catch (error) {
@@ -33,14 +35,17 @@ function SalasPage() {
         setCargando(false);
       }
     };
+
     cargarSalas();
   }, []);
 
   const handleDelete = async (sala) => {
     try {
-      const response = await apiFetch(`http://localhost:8081/api/v1/salas/${sala.id}`, {
-        method: "DELETE",
-      });
+      const response = await apiFetch(
+        `http://localhost:8081/api/v1/salas/${sala.id}`,
+        { method: "DELETE" }
+      );
+
       return response.ok;
     } catch (error) {
       console.error("Error de red al eliminar:", error);
@@ -48,7 +53,13 @@ function SalasPage() {
     }
   };
 
-  if (cargando) return <div className="create-page"><h1 className="page-title">Cargando salas...</h1></div>;
+  if (cargando) {
+    return (
+      <div className="create-page">
+        <h1 className="page-title">Cargando salas...</h1>
+      </div>
+    );
+  }
 
   return (
     <DataListPage
@@ -59,9 +70,14 @@ function SalasPage() {
       columns={columns}
       data={rooms}
       tableVariant="rooms"
+      deleteOnly
+      showFilters={false}
       basePath="/salas"
       searchKeys={["name"]}
-      getMobileFields={(room) => ({ title: room.name, details: [] })}
+      getMobileFields={(room) => ({
+        title: room.name,
+        details: [],
+      })}
       onDelete={handleDelete}
     />
   );

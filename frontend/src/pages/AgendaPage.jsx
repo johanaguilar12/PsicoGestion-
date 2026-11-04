@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight, Filter, Plus, Printer, X } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
-import CalendarGrid from '../components/calendar/CalendarGrid';
+import { shortWeekday, slots } from '../components/calendar/dateUtils';
 import MobileCalendar from '../components/calendar/MobileCalendar';
 import AppointmentDialog from '../components/calendar/AppointmentDialog';
 import { addDays, addMinutes, dateKey, formatTime, longDate, monthStart, parseDate, weekStart } from '../components/calendar/dateUtils';
@@ -31,6 +31,152 @@ const getRoomName = (obj) => {
   return typeof name === 'string' ? name.trim() : name;
 };
 const getId = (obj, type) => obj?.[`id${type}`] || obj?.[`id_${type.toLowerCase()}`] || obj?.id;
+
+const toMinutes = (time) => {
+  const [hours, minutes] = String(time || '00:00').split(':').map(Number);
+  return hours * 60 + minutes;
+};
+
+function CalendarGrid({ date, view, appointments, onSelect, onCreate }) {
+  const dates = view === 'day' ? [date] : Array.from({ length: 7 }, (_, index) => addDays(weekStart(date), index));
+  const todayKey = dateKey(new Date());
+  const selectedKey = dateKey(date);
+  const visibleSlots = slots.filter((time) => toMinutes(time) >= 7 * 60 && toMinutes(time) < 19 * 60);
+  const slotMinutes = visibleSlots.length > 1 ? toMinutes(visibleSlots[1]) - toMinutes(visibleSlots[0]) : 30;
+  const firstMinute = toMinutes(visibleSlots[0]);
+  const endMinute = toMinutes(visibleSlots[visibleSlots.length - 1]) + slotMinutes;
+  const [activeAppointments, setActiveAppointments] = useState({});
+  const clusters = [];
+
+  dates.forEach((day, dayIndex) => {
+    const dayItems = appointments
+      .filter((item) => item.date === dateKey(day))
+      .map((item) => ({
+        item,
+        start: toMinutes(item.time),
+        end: Math.max(toMinutes(item.endTime || addMinutes(item.time, 60)), toMinutes(item.time) + slotMinutes),
+      }))
+      .filter((entry) => entry.start < endMinute && entry.end > firstMinute)
+      .sort((a, b) => a.start - b.start || a.end - b.end);
+
+    let current = [];
+    let currentEnd = -1;
+    const finish = () => {
+      if (!current.length) return;
+      const start = Math.max(firstMinute, Math.min(...current.map((entry) => entry.start)));
+      const end = Math.min(endMinute, Math.max(...current.map((entry) => entry.end)));
+      clusters.push({
+        key: `${dateKey(day)}-${start}`,
+        dayIndex,
+        date: dateKey(day),
+        start,
+        row: Math.floor((start - firstMinute) / slotMinutes) + 2,
+        span: Math.max(1, Math.ceil((end - start) / slotMinutes)),
+        items: current.map((entry) => entry.item),
+      });
+      current = [];
+      currentEnd = -1;
+    };
+
+    dayItems.forEach((entry) => {
+      if (current.length && entry.start >= currentEnd) finish();
+      current.push(entry);
+      currentEnd = Math.max(currentEnd, entry.end);
+    });
+    finish();
+  });
+
+  return (
+    <div className="calendar-scroll" role="region" aria-label="Calendario de citas" tabIndex={0}>
+      <div className="calendar-grid" style={{ '--calendar-days': dates.length, gridTemplateRows: `40px repeat(${visibleSlots.length}, 80px)` }}>
+        <div className="calendar-grid__corner" style={{ gridRow: 1, gridColumn: 1 }} />
+        {dates.map((day, dayIndex) => (
+          <div
+            key={dateKey(day)}
+            className={`calendar-grid__day${dateKey(day) === selectedKey ? ' calendar-grid__day--selected' : ''}${dateKey(day) === todayKey ? ' calendar-grid__day--today' : ''}`}
+            style={{ gridRow: 1, gridColumn: dayIndex + 2 }}
+          >
+            <span>{shortWeekday(day)}</span>
+            <span className="calendar-grid__date-number">{day.getDate()}</span>
+          </div>
+        ))}
+        {visibleSlots.map((time, slotIndex) => (
+          <div className="calendar-grid__row" key={time}>
+            <div className="calendar-grid__time" style={{ gridRow: slotIndex + 2, gridColumn: 1 }}>{formatTime(time)}</div>
+            {dates.map((day, dayIndex) => {
+              const key = dateKey(day);
+              return (
+                <div className="calendar-grid__cell" key={`${key}-${time}`} style={{ gridRow: slotIndex + 2, gridColumn: dayIndex + 2 }}>
+                  <button
+                    className="calendar-grid__empty"
+                    type="button"
+                    aria-label={`Crear cita el ${key} a las ${formatTime(time)}`}
+                    onClick={() => onCreate(key, time)}
+                  />
+                </div>
+              );
+            })}
+          </div>
+        ))}
+        {clusters.map((cluster) => {
+          const activeIndex = (activeAppointments[cluster.key] || 0) % cluster.items.length;
+          const item = cluster.items[activeIndex];
+          const count = cluster.items.length;
+          return (
+            <div
+              key={cluster.key}
+              style={{
+                gridRow: `${cluster.row} / span ${cluster.span}`,
+                gridColumn: cluster.dayIndex + 2,
+                zIndex: 2,
+                minWidth: 0,
+                minHeight: 0,
+                padding: '4px 5px',
+                boxSizing: 'border-box',
+                pointerEvents: 'none',
+                position: 'relative',
+              }}
+            >
+              <button
+                type="button"
+                className={`calendar-event calendar-event--${item.color || 1}`}
+                style={{ height: '100%', minHeight: 0, paddingTop: count > 1 ? 43 : 32, pointerEvents: 'auto' }}
+                onClick={() => onSelect(item)}
+                aria-label={`Ver cita de ${item.patient}, ${formatTime(item.time)} a ${formatTime(item.endTime || addMinutes(item.time, 60))}, ${item.room}`}
+              >
+                <span>{item.time}–{item.endTime || addMinutes(item.time, 60)}</span>
+                <strong>{item.patient}</strong>
+                <span>{item.room}</span>
+              </button>
+              <div style={{ position: 'absolute', top: 9, left: 12, right: 11, zIndex: 5, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 3, pointerEvents: 'auto' }}>
+                {count > 1 ? (
+                  <button
+                    type="button"
+                    onClick={() => setActiveAppointments((current) => ({ ...current, [cluster.key]: (activeIndex + 1) % count }))}
+                    aria-label={`Ver siguiente cita de ${count} citas simultáneas`}
+                    title="Ver siguiente cita en este horario"
+                    style={{ minWidth: 0, border: '1px solid currentColor', borderRadius: 5, padding: '2px 5px', background: 'var(--white)', color: 'var(--blue-900)', fontSize: 11, cursor: 'pointer' }}
+                  >
+                    {activeIndex + 1} de {count} <ChevronRight size={12} style={{ display: 'inline', verticalAlign: 'middle' }} />
+                  </button>
+                ) : <span />}
+                <button
+                  type="button"
+                  aria-label={`Agregar otra cita el ${cluster.date} a las ${formatTime(item.time)}`}
+                  title="Agregar otra cita en este horario"
+                  onClick={() => onCreate(cluster.date, item.time)}
+                  style={{ flexShrink: 0, width: 25, height: 25, padding: 0, lineHeight: 0, borderRadius: 6, border: '1px solid var(--gray-200)', background: 'var(--white)', color: 'var(--blue-900)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
+                >
+                  <Plus size={16} strokeWidth={2} />
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 
 function AgendaPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -137,7 +283,7 @@ function AgendaPage() {
   
   const printDayKeys = useMemo(() => new Set(printDays.map(dateKey)), [printDays]);
   const printMonthDate = parseDate(printDate);
-  const printTimes = useMemo(() => Array.from({ length: 21 }, (_, i) => `${String(Math.floor((420 + i * 30) / 60)).padStart(2, '0')}:${String((420 + i * 30) % 60).padStart(2, '0')}`), []);
+  const printTimes = useMemo(() => Array.from({ length: 24 }, (_, i) => `${String(Math.floor((420 + i * 30) / 60)).padStart(2, '0')}:${String((420 + i * 30) % 60).padStart(2, '0')}`), []);
   const printItems = useMemo(() => visible.filter((item) => printDayKeys.has(item.date)).sort((a, b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time)), [visible, printDayKeys]);
   
   const invalidPrintRange = false;
@@ -319,14 +465,37 @@ function AgendaPage() {
         </table>
       ) : (
         <div className={`agenda-print__calendar agenda-print__calendar--${printPeriod}`}>
-          <table className="agenda-print__timetable">
-            <thead><tr><th className="agenda-print__hour-heading">Horario</th>{printDays.map((day) => <th key={dateKey(day)}>{day.getDate()}</th>)}</tr></thead>
-            <tbody>{printTimes.map((time) => <tr key={time}><th scope="row">{time}</th>
-              {printDays.map((day) => <td key={`${dateKey(day)}-${time}`}>
-                {(printGrouped.get(dateKey(day)) || []).filter((item) => item.time === time).map((item) => <div className="agenda-print__event" key={item.id}><strong>{item.patient}</strong></div>)}
-              </td>)}
-            </tr>)}</tbody>
-          </table>
+          {printPeriod === 'month' ? (
+            <>
+              <div className="agenda-print__weekdays">
+                {['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'].map((day) => <strong key={day}>{day}</strong>)}
+              </div>
+              <div className="agenda-print__days">
+                {Array.from({ length: printDays[0].getDay() }, (_, index) => <div className="agenda-print__day agenda-print__day--empty" key={`empty-${index}`} />)}
+                {printDays.map((day) => (
+                  <div className={`agenda-print__day${day.getDay() === 0 || day.getDay() === 6 ? ' agenda-print__day--closed' : ''}`} key={dateKey(day)}>
+                    <h3>{day.getDate()}</h3>
+                    <div className="agenda-print__events">
+                      {(printGrouped.get(dateKey(day)) || []).map((item) => (
+                        <div className={`agenda-print__event calendar-event--${item.color || 5}`} key={item.id}>
+                          <strong>{item.time} {item.patient}</strong>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : (
+            <table className="agenda-print__timetable">
+              <thead><tr><th className="agenda-print__hour-heading">Horario</th>{printDays.map((day) => <th key={dateKey(day)}>{day.getDate()}</th>)}</tr></thead>
+              <tbody>{printTimes.map((time) => <tr key={time}><th scope="row">{time}</th>
+                {printDays.map((day) => <td key={`${dateKey(day)}-${time}`}>
+                  {(printGrouped.get(dateKey(day)) || []).filter((item) => item.time === time).map((item) => <div className="agenda-print__event" key={item.id}><strong>{item.patient}</strong></div>)}
+                </td>)}
+              </tr>)}</tbody>
+            </table>
+          )}
         </div>
       )}
     </section>

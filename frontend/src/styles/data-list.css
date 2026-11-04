@@ -317,7 +317,7 @@
 
 .data-table--rooms th:nth-child(2),
 .data-table--rooms td:nth-child(2) {
-  width: 92px;
+  width: 144px;
   padding-right: 6px;
   padding-left: 6px;
   text-align: center;
@@ -331,13 +331,7 @@
   padding-left: 6px;
 }
 
-.data-table--rooms th:nth-child(3),
-.data-table--rooms td:nth-child(3) {
-  width: 108px;
-  padding-right: 6px;
-  padding-left: 6px;
-  text-align: center;
-}
+
 
 .data-table__actions-heading {
   width: 1%;
@@ -623,16 +617,25 @@
   margin-top: 24px;
 }
 
+
 .confirm-dialog__button {
-  min-height: 44px;
-  padding: 0 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-width: 120px;
+  min-height: 62px;
+  height: 62px;
+  padding: 16px 28px;
   border: 0;
   border-radius: 8px;
   font-family: var(--font-family);
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 600;
+  line-height: 28px;
   cursor: pointer;
 }
+
 
 .confirm-dialog__button--secondary {
   border: 1px solid var(--gray-200);
@@ -773,5 +776,74 @@
   .confirm-dialog__button {
     width: 100%;
     min-height: 48px;
+  }
+}
+
+.row-actions__button--delete {
+  color: #b42318;
+  border-radius: 8px;
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.row-actions__button--delete:hover {
+  background-color: #fef3f2;
+  color: #912018;
+}
+
+.row-actions__button--delete:focus-visible {
+  outline: 2px solid #b42318;
+  outline-offset: 2px;
+}
+
+.data-table--rooms th:nth-child(3),
+.data-table--rooms td:nth-child(3) {
+  width: 144px;
+}
+
+
+.data-search__input::-webkit-search-cancel-button,
+.data-search__input::-webkit-search-decoration,
+.data-search__input::-webkit-search-results-button,
+.data-search__input::-webkit-search-results-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+
+@media (min-width: 601px) {
+  .confirm-dialog__actions > .confirm-dialog__button {
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 120px;
+    height: 62px;
+    min-height: 62px;
+    padding: 16px 28px;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 28px;
+    border-radius: 8px;
+  }
+}
+
+
+@media (max-width: 900px) {
+  .mobile-data-card--rooms {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .mobile-data-card--rooms .mobile-data-card__content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .mobile-data-card--rooms .mobile-data-card__actions {
+    margin-left: 0;
   }
 }

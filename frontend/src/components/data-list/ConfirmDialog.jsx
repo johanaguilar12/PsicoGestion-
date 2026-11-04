@@ -1,3 +1,4 @@
+
 import { AlertTriangle, X } from "lucide-react";
 
 function ConfirmDialog({
@@ -50,7 +51,7 @@ function ConfirmDialog({
         <div className="confirm-dialog__actions">
           <button
             type="button"
-            className="confirm-dialog__button confirm-dialog__button--secondary"
+            className="calendar-button confirm-dialog__button confirm-dialog__button--secondary"
             onClick={onCancel}
           >
             Cancelar
@@ -58,7 +59,7 @@ function ConfirmDialog({
 
           <button
             type="button"
-            className={`confirm-dialog__button ${
+            className={`calendar-button confirm-dialog__button ${
               danger
                 ? "confirm-dialog__button--danger"
                 : "confirm-dialog__button--primary"
