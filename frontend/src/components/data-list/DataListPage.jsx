@@ -69,6 +69,7 @@ function DataListPage({
   getMobileFields,
   tableVariant,
   deleteOnly = false,
+  showFilters = true,
   basePath,
   searchKeys,
   onStatusChange,
@@ -173,28 +174,30 @@ function DataListPage({
           onChange={setQuery}
         />
 
-        <div className="data-filter">
-          <button
-            type="button"
-            className={`data-page__filter ${
-              statusFilter !== "Todos" ? "data-page__filter--active" : ""
-            }`}
-            onClick={() => setFilterOpen((open) => !open)}
-            aria-expanded={filterOpen}
-            aria-haspopup="dialog"
-          >
-            <Filter size={20} strokeWidth={1.8} aria-hidden="true" />
-            <span>{statusFilter === "Todos" ? "Filtros" : statusFilter}</span>
-          </button>
+        {showFilters && (
+          <div className="data-filter">
+            <button
+              type="button"
+              className={`data-page__filter ${
+                statusFilter !== "Todos" ? "data-page__filter--active" : ""
+              }`}
+              onClick={() => setFilterOpen((open) => !open)}
+              aria-expanded={filterOpen}
+              aria-haspopup="dialog"
+            >
+              <Filter size={20} strokeWidth={1.8} aria-hidden="true" />
+              <span>{statusFilter === "Todos" ? "Filtros" : statusFilter}</span>
+            </button>
 
-          {filterOpen && (
-            <FilterMenu
-              value={statusFilter}
-              onChange={setStatusFilter}
-              onClose={() => setFilterOpen(false)}
-            />
-          )}
-        </div>
+            {filterOpen && (
+              <FilterMenu
+                value={statusFilter}
+                onChange={setStatusFilter}
+                onClose={() => setFilterOpen(false)}
+              />
+            )}
+          </div>
+        )}
       </div>
 
       {filteredItems.length > 0 ? (

@@ -71,6 +71,7 @@ function SalasPage() {
       data={rooms}
       tableVariant="rooms"
       deleteOnly
+      showFilters={false}
       basePath="/salas"
       searchKeys={["name"]}
       getMobileFields={(room) => ({
