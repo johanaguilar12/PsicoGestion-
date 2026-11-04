@@ -30,7 +30,6 @@ function SalaDetallePage() {
           setSala({
             id: data.idSala,
             name: data.nombreSala,
-            status: "Libre",
           });
         }
       } catch (error) {
@@ -121,11 +120,6 @@ function SalaDetallePage() {
             <DetailField
               label="Nombre de la sala"
               value={sala.name}
-            />
-
-            <DetailField
-              label="Disponibilidad actual"
-              value={sala.status}
             />
           </section>
         </div>

@@ -7,7 +7,6 @@ import "../styles/data-list.css";
 
 const columns = [
   { key: "name", label: "Nombre de la sala" },
-  { key: "status", label: "Estatus" },
 ];
 
 function SalasPage() {
@@ -26,7 +25,6 @@ function SalasPage() {
           const salasFormateadas = data.map((sala) => ({
             id: sala.idSala,
             name: sala.nombreSala,
-            status: "Libre",
           }));
 
           setRooms(salasFormateadas);

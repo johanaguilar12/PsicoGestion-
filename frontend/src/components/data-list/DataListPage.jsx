@@ -82,6 +82,14 @@ function DataListPage({
   const [menuItem, setMenuItem] = useState(null);
   const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
   const [pendingDelete, setPendingDelete] = useState(null);
+  const deleteLabels = {
+    "/pacientes": "paciente",
+    "/terapeutas": "terapeuta",
+    "/usuarios": "usuario",
+    "/salas": "sala",
+  };
+  
+  const deleteLabel = deleteLabels[basePath] || "registro";
 
   useEffect(() => {
     setItems(data);
@@ -235,19 +243,19 @@ function DataListPage({
         />
       )}
 
-      <ConfirmDialog
-        open={Boolean(pendingDelete)}
-        title={deleteOnly ? "Eliminar sala" : "Eliminar registro"}
-        message={
-          pendingDelete
-            ? `¿Deseas eliminar a ${pendingDelete.name}? Esta acción no se puede deshacer.`
-            : ""
-        }
-        confirmLabel="Eliminar"
-        danger
-        onConfirm={handleDeleteConfirm}
-        onCancel={() => setPendingDelete(null)}
-      />
+    <ConfirmDialog
+      open={Boolean(pendingDelete)}
+      title={`Eliminar ${deleteLabel}`}
+      message={
+        pendingDelete
+          ? `¿Deseas eliminar a ${pendingDelete.name}? Esta acción no se puede deshacer.`
+          : ""
+      }
+      confirmLabel="Eliminar"
+      danger
+      onConfirm={handleDeleteConfirm}
+      onCancel={() => setPendingDelete(null)}
+    />
     </section>
   );
 }
