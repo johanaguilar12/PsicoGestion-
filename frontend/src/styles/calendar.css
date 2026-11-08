@@ -131,7 +131,19 @@
 @media(max-width:600px){.calendar-modal{padding:12px}.calendar-modal__panel{width:100%;padding:18px 14px}.calendar-form__split{grid-template-columns:minmax(0,1fr)}.calendar-form input[type='date']{width:100%;min-width:0;max-width:100%}}
 
 
-.calendar-month__day .calendar-month__event{display:block;width:100%;min-width:0;padding:4px 6px;border-left:4px solid;border-radius:5px;background-color:var(--blue-50);color:var(--blue-900);font-size:14px;line-height:20px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.calendar-month__day .calendar-month__event {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  padding: 4px 6px;
+  border-left: 4px solid;
+  border-radius: 5px;
+  font-size: 14px;
+  line-height: 20px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .calendar-month__day .calendar-month__event.calendar-event--1{background:#efe5ff;border-color:#9d42f5}
 .calendar-month__day .calendar-month__event.calendar-event--2{background:#d2f8e5;border-color:#00c86b}
 .calendar-month__day .calendar-month__event.calendar-event--3{background:#ffe4eb;border-color:#ff4e7a}
