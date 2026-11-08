@@ -164,7 +164,7 @@ function EditarUsuarioPage() {
                   <img src={photoPreview} alt="Fotografía del usuario" className="photo-upload__preview photo-upload__preview--image" />
                   <input id="foto-usuario" type="file" className="photo-upload__input" accept=".jpg,.jpeg,.png,image/jpeg,image/png" onChange={handlePhotoChange} />
                   <label htmlFor="foto-usuario" className="photo-upload__button">Editar foto</label>
-                  <p className="photo-upload__help">JPG, PNG, JPEG (máx. 2MB)</p>
+                  <p className="photo-upload__help">JPG, PNG, JPEG (máx. 1MB)</p>
                 </div>
               </div>
             </div>
