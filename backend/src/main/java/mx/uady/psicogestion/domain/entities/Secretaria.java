@@ -1,3 +1,4 @@
+
 package mx.uady.psicogestion.domain.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -10,7 +11,6 @@ public class Secretaria {
     private String correoElectronico;
     private String contrasena;
 
-    // Campos visuales para el frontend
     private boolean activo;
     private String fotoPerfil;
     private String rol;
@@ -49,17 +49,20 @@ public class Secretaria {
     public LocalDateTime getFechaRegistro() { return fechaRegistro; }
     public void setFechaRegistro(LocalDateTime fechaRegistro) { this.fechaRegistro = fechaRegistro; }
 
-
     public boolean esNombreValido() {
         return this.nombreCompleto != null && this.nombreCompleto.length() <= 50;
     }
 
     public boolean esCorreoInstitucionalValido() {
-        return this.correoElectronico != null && this.correoElectronico.toLowerCase().endsWith("@correo.uady.mx");
+        if (this.correoElectronico == null) return false;
+
+        String correo = this.correoElectronico.toLowerCase();
+
+        return correo.endsWith("@correo.uady.mx")
+                || correo.endsWith("@alumnos.uady.mx");
     }
 
     public boolean esContrasenaSegura() {
-
         if (this.contrasena == null || this.contrasena.length() < 8 || this.contrasena.length() > 25) return false;
 
         boolean tieneNumero = this.contrasena.matches(".*\\d.*");

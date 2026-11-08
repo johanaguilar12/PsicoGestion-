@@ -1,5 +1,7 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { CircleUserRound } from "lucide-react";
 import { apiFetch } from "../services/api";
 
 import ActionsMenu from "../components/data-list/ActionsMenu";
@@ -22,10 +24,10 @@ const getMenuPosition = (target) => {
 function TerapeutaDetallePage() {
   const navigate = useNavigate();
   const { therapistId } = useParams();
-  
+
   const [terapeuta, setTerapeuta] = useState(null);
   const [cargando, setCargando] = useState(true);
-  
+
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -44,7 +46,7 @@ function TerapeutaDetallePage() {
             fechaNacimiento: data.fechaNacimiento,
             sexo: data.sexo === "F" ? "Mujer" : "Hombre",
             cedula: data.cedulaProfesional,
-            foto: data.fotoPerfil || "/images/terapeuta-ejemplo.jpg",
+            foto: data.fotoPerfil,
             status: data.activo ? "Activo" : "Inactivo",
           });
         }
@@ -62,14 +64,13 @@ function TerapeutaDetallePage() {
     setMenuOpen(true);
   };
 
-  // 🚨 Función modificada: Alterna entre Activo e Inactivo dinámicamente
   const handleToggleStatus = async () => {
     try {
       const response = await apiFetch(`http://localhost:8081/api/v1/terapeutas/${therapistId}/baja`, { method: "PUT" });
       if (response.ok) {
-        setTerapeuta((current) => ({ 
-            ...current, 
-            status: current.status === "Activo" ? "Inactivo" : "Activo" 
+        setTerapeuta((current) => ({
+          ...current,
+          status: current.status === "Activo" ? "Inactivo" : "Activo"
         }));
       }
     } catch (error) {
@@ -90,6 +91,7 @@ function TerapeutaDetallePage() {
         <div className="create-form__content">
           <section className="create-section">
             <h2 className="create-section__title">Información personal</h2>
+
             <div className="create-profile-layout">
               <div className="create-profile-layout__fields">
                 <DetailField label="Nombre completo" value={terapeuta.name} />
@@ -97,14 +99,31 @@ function TerapeutaDetallePage() {
                 <DetailField label="Teléfono" value={terapeuta.telefono} />
                 <DetailField label="Estatus actual" value={terapeuta.status} />
               </div>
+
               <div className="create-profile-layout__photo detail-profile-photo">
-                <img src={terapeuta.foto} alt={`Fotografía de ${terapeuta.name}`} className="detail-profile-photo__image" />
+                {terapeuta.foto && !terapeuta.foto.startsWith("/images/") ? (
+                  <img
+                    src={terapeuta.foto}
+                    alt={`Fotografía de ${terapeuta.name}`}
+                    className="detail-profile-photo__image"
+                  />
+                ) : (
+                  <CircleUserRound
+                    className="photo-upload__preview"
+                    size={128}
+                    strokeWidth={0.5}
+                    aria-label="Sin fotografía"
+                    role="img"
+                  />
+                )}
               </div>
             </div>
+
             <div className="form-grid form-grid--two">
               <DetailField label="Fecha de nacimiento" value={terapeuta.fechaNacimiento} />
               <DetailField label="Sexo" value={terapeuta.sexo} />
             </div>
+
             <div className="create-section__subsection">
               <h2 className="create-section__title">Información profesional</h2>
               <DetailField label="Cédula profesional" value={terapeuta.cedula} />

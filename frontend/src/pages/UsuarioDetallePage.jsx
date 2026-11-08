@@ -1,5 +1,7 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { CircleUserRound } from "lucide-react";
 import { apiFetch } from "../services/api";
 
 import ActionsMenu from "../components/data-list/ActionsMenu";
@@ -22,10 +24,10 @@ const getMenuPosition = (target) => {
 function UsuarioDetallePage() {
   const navigate = useNavigate();
   const { userId } = useParams();
-  
+
   const [usuario, setUsuario] = useState(null);
   const [cargando, setCargando] = useState(true);
-  
+
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -44,7 +46,7 @@ function UsuarioDetallePage() {
             rol: data.rol || "Administrador",
             fechaRegistro: data.fechaRegistro ? new Date(data.fechaRegistro).toLocaleDateString() : "Reciente",
             ultimaActualizacion: "N/A",
-            foto: data.fotoPerfil || "/images/usuario-ejemplo.jpg",
+            foto: data.fotoPerfil,
             status: data.activo ? "Activo" : "Inactivo",
           });
         }
@@ -66,9 +68,9 @@ function UsuarioDetallePage() {
     try {
       const response = await apiFetch(`http://localhost:8081/api/v1/cuentas/${userId}/baja`, { method: "PUT" });
       if (response.ok) {
-        setUsuario((current) => ({ 
-            ...current, 
-            status: current.status === "Activo" ? "Inactivo" : "Activo" 
+        setUsuario((current) => ({
+          ...current,
+          status: current.status === "Activo" ? "Inactivo" : "Activo"
         }));
       }
     } catch (error) {
@@ -98,7 +100,21 @@ function UsuarioDetallePage() {
               </div>
 
               <div className="create-profile-layout__photo detail-profile-photo">
-                <img src={usuario.foto} alt={`Fotografía de ${usuario.name}`} className="detail-profile-photo__image" />
+                {usuario.foto && !usuario.foto.startsWith("/images/") ? (
+                  <img
+                    src={usuario.foto}
+                    alt={`Fotografía de ${usuario.name}`}
+                    className="detail-profile-photo__image"
+                  />
+                ) : (
+                  <CircleUserRound
+                    className="photo-upload__preview"
+                    size={128}
+                    strokeWidth={0.5}
+                    aria-label="Sin fotografía"
+                    role="img"
+                  />
+                )}
               </div>
             </div>
 
