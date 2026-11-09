@@ -24,7 +24,7 @@ public class RegistrarUsuarioUseCase {
             throw new IllegalArgumentException("El nombre debe tener un máximo de 50 caracteres.");
         }
         if (!nuevaSecretaria.esCorreoInstitucionalValido()) {
-            throw new IllegalArgumentException("El correo debe tener el formato @correo.uady.mx");
+            throw new IllegalArgumentException("El correo debe tener el formato @correo.uady.mx o @alumnos.uady.mx");
         }
         if (!nuevaSecretaria.esContrasenaSegura()) {
             throw new IllegalArgumentException("La contraseña no cumple con los criterios de seguridad (8-25 caracteres, 1 número, 1 mayúscula, 1 carácter especial).");
@@ -41,6 +41,56 @@ public class RegistrarUsuarioUseCase {
         nuevaSecretaria.setFechaRegistro(LocalDateTime.now());
 
         return secretariaRepository.guardar(nuevaSecretaria);
+    }
+
+    public Secretaria actualizar(Integer id, Secretaria datosActualizados, String nuevaContrasena) {
+        Secretaria existente = buscarPorId(id);
+
+        existente.setNombreCompleto(datosActualizados.getNombreCompleto());
+        existente.setCorreoElectronico(datosActualizados.getCorreoElectronico());
+        existente.setTelefono(datosActualizados.getTelefono());
+        existente.setRol(datosActualizados.getRol());
+
+        if (!existente.esNombreValido()) {
+            throw new IllegalArgumentException("El nombre debe tener un máximo de 50 caracteres.");
+        }
+
+        if (!existente.esCorreoInstitucionalValido()) {
+            throw new IllegalArgumentException("El correo debe tener el formato @correo.uady.mx o @alumnos.uady.mx");
+        }
+
+        secretariaRepository.buscarPorCorreo(existente.getCorreoElectronico())
+                .ifPresent(usuario -> {
+                    if (!usuario.getIdSecretaria().equals(id)) {
+                        throw new IllegalStateException("El correo ya está registrado en el sistema.");
+                    }
+                });
+
+        secretariaRepository.buscarPorTelefono(existente.getTelefono())
+                .ifPresent(usuario -> {
+                    if (!usuario.getIdSecretaria().equals(id)) {
+                        throw new IllegalStateException("El teléfono ya está registrado en el sistema.");
+                    }
+                });
+
+        if (nuevaContrasena != null && !nuevaContrasena.trim().isEmpty()) {
+            Secretaria validacion = new Secretaria();
+            validacion.setContrasena(nuevaContrasena);
+
+            if (!validacion.esContrasenaSegura()) {
+                throw new IllegalArgumentException(
+                        "La contraseña no cumple con los criterios de seguridad (8-25 caracteres, 1 número, 1 mayúscula, 1 carácter especial)."
+                );
+            }
+
+            existente.setContrasena(autenticacionService.cifrarContrasena(nuevaContrasena));
+        }
+
+        if (datosActualizados.getFotoPerfil() != null) {
+            existente.setFotoPerfil(datosActualizados.getFotoPerfil());
+        }
+
+        return secretariaRepository.guardar(existente);
     }
 
     public List<Secretaria> listarTodas() {

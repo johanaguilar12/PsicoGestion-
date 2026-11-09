@@ -15,7 +15,6 @@ function EditarPacientePage() {
     curp: "",
     fechaNacimiento: "",
     sexo: "",
-    correo: "",
     telefono: "",
   });
   
@@ -34,7 +33,6 @@ function EditarPacientePage() {
             curp: data.curp || "",
             fechaNacimiento: data.fechaNacimiento || "",
             sexo: data.sexo === "F" ? "Mujer" : "Hombre",
-            correo: "No registrado", 
             telefono: data.telefono || "",
           });
         } else {
@@ -168,16 +166,6 @@ function EditarPacientePage() {
               />
 
               <FormField
-                label="Correo institucional"
-                name="correo"
-                type="email"
-                value={formData.correo}
-                onChange={handleChange}
-                autoComplete="email"
-                required
-              />
-
-              <FormField
                 label="Teléfono"
                 name="telefono"
                 type="tel"
@@ -194,9 +182,7 @@ function EditarPacientePage() {
             </div>
 
             <div className="create-form__actions">
-              <button type="submit" className="create-form__button create-form__button--primary">
-                Guardar cambios
-              </button>
+             
 
               <button
                 type="button"
@@ -204,6 +190,10 @@ function EditarPacientePage() {
                 onClick={() => navigate(`/pacientes/${patientId}`)}
               >
                 Cancelar
+              </button>
+
+              <button type="submit" className="create-form__button create-form__button--primary">
+                Guardar cambios
               </button>
             </div>
           </section>

@@ -49,13 +49,20 @@ public class Secretaria {
     public LocalDateTime getFechaRegistro() { return fechaRegistro; }
     public void setFechaRegistro(LocalDateTime fechaRegistro) { this.fechaRegistro = fechaRegistro; }
 
-
     public boolean esNombreValido() {
         return this.nombreCompleto != null && this.nombreCompleto.length() <= 50;
     }
 
     public boolean esCorreoInstitucionalValido() {
-        return this.correoElectronico != null && this.correoElectronico.toLowerCase().endsWith("@correo.uady.mx");
+        if (this.correoElectronico == null || this.correoElectronico.isBlank()) {
+            return false;
+        }
+
+        String correo = this.correoElectronico.trim().toLowerCase();
+
+        return correo.matches(
+            "^[a-z0-9._%+-]+@(correo\\.uady\\.mx|alumnos\\.uady\\.mx)$"
+        );
     }
 
     public boolean esContrasenaSegura() {

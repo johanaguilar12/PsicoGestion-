@@ -119,15 +119,6 @@ function NuevoPacientePage() {
           />
 
           <FormField
-            label="Correo institucional"
-            name="email"
-            type="email"
-            placeholder="ejemplo@correo.uady.mx"
-            autoComplete="email"
-            required
-          />
-
-          <FormField
             label="Teléfono"
             name="phone"
             type="tel"

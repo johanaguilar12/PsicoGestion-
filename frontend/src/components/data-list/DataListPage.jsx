@@ -1,3 +1,4 @@
+
 import { useMemo, useState, useEffect } from "react";
 import { Filter, Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -25,7 +26,7 @@ function matchesSearch(item, searchKeys, query) {
 
   const digitQuery = onlyDigits(query);
   const numericQuery =
-    digitQuery.length > 0 && /^[\d\s-]+\$/.test(query.trim());
+    digitQuery.length > 0 && /^[\d\s-]+$/.test(query.trim());
 
   return searchKeys.some((key) => {
     const value = item[key];
@@ -67,10 +68,12 @@ function DataListPage({
   data,
   getMobileFields,
   tableVariant,
+  deleteOnly = false,
+  showFilters = true,
   basePath,
   searchKeys,
-  onStatusChange, 
-  onDelete       
+  onStatusChange,
+  onDelete,
 }) {
   const navigate = useNavigate();
   const [items, setItems] = useState(data);
@@ -80,8 +83,15 @@ function DataListPage({
   const [menuItem, setMenuItem] = useState(null);
   const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
   const [pendingDelete, setPendingDelete] = useState(null);
-
+  const deleteLabels = {
+    "/pacientes": "paciente",
+    "/terapeutas": "terapeuta",
+    "/usuarios": "usuario",
+    "/salas": "sala",
+  };
   
+  const deleteLabel = deleteLabels[basePath] || "registro";
+
   useEffect(() => {
     setItems(data);
   }, [data]);
@@ -108,6 +118,7 @@ function DataListPage({
   const handleToggleStatus = async (item) => {
     if (onStatusChange) {
       const success = await onStatusChange(item);
+
       if (!success) {
         setMenuItem(null);
         return;
@@ -124,12 +135,16 @@ function DataListPage({
           : currentItem,
       ),
     );
+
     setMenuItem(null);
   };
 
   const handleDeleteConfirm = async () => {
+    if (!pendingDelete) return;
+
     if (onDelete) {
       const success = await onDelete(pendingDelete);
+
       if (!success) {
         setPendingDelete(null);
         return;
@@ -139,6 +154,7 @@ function DataListPage({
     setItems((currentItems) =>
       currentItems.filter((item) => item.id !== pendingDelete.id),
     );
+
     setPendingDelete(null);
   };
 
@@ -158,28 +174,30 @@ function DataListPage({
           onChange={setQuery}
         />
 
-        <div className="data-filter">
-          <button
-            type="button"
-            className={`data-page__filter ${
-              statusFilter !== "Todos" ? "data-page__filter--active" : ""
-            }`}
-            onClick={() => setFilterOpen((open) => !open)}
-            aria-expanded={filterOpen}
-            aria-haspopup="dialog"
-          >
-            <Filter size={20} strokeWidth={1.8} aria-hidden="true" />
-            <span>{statusFilter === "Todos" ? "Filtros" : statusFilter}</span>
-          </button>
+        {showFilters && (
+          <div className="data-filter">
+            <button
+              type="button"
+              className={`data-page__filter ${
+                statusFilter !== "Todos" ? "data-page__filter--active" : ""
+              }`}
+              onClick={() => setFilterOpen((open) => !open)}
+              aria-expanded={filterOpen}
+              aria-haspopup="dialog"
+            >
+              <Filter size={20} strokeWidth={1.8} aria-hidden="true" />
+              <span>{statusFilter === "Todos" ? "Filtros" : statusFilter}</span>
+            </button>
 
-          {filterOpen && (
-            <FilterMenu
-              value={statusFilter}
-              onChange={setStatusFilter}
-              onClose={() => setFilterOpen(false)}
-            />
-          )}
-        </div>
+            {filterOpen && (
+              <FilterMenu
+                value={statusFilter}
+                onChange={setStatusFilter}
+                onClose={() => setFilterOpen(false)}
+              />
+            )}
+          </div>
+        )}
       </div>
 
       {filteredItems.length > 0 ? (
@@ -192,6 +210,8 @@ function DataListPage({
               onView={handleView}
               onEdit={handleEdit}
               onMenu={handleMenu}
+              deleteOnly={deleteOnly}
+              onDelete={setPendingDelete}
             />
           </div>
 
@@ -202,6 +222,8 @@ function DataListPage({
               onView={handleView}
               onEdit={handleEdit}
               onMenu={handleMenu}
+              deleteOnly={deleteOnly}
+              onDelete={setPendingDelete}
             />
           </div>
         </>
@@ -211,30 +233,32 @@ function DataListPage({
         </div>
       )}
 
-      <ActionsMenu
-        item={menuItem}
-        position={menuPosition}
-        onToggleStatus={handleToggleStatus}
-        onDelete={(item) => {
-          setMenuItem(null);
-          setPendingDelete(item);
-        }}
-        onClose={() => setMenuItem(null)}
-      />
+      {!deleteOnly && (
+        <ActionsMenu
+          item={menuItem}
+          position={menuPosition}
+          onToggleStatus={handleToggleStatus}
+          onDelete={(item) => {
+            setMenuItem(null);
+            setPendingDelete(item);
+          }}
+          onClose={() => setMenuItem(null)}
+        />
+      )}
 
-      <ConfirmDialog
-        open={Boolean(pendingDelete)}
-        title="Eliminar registro"
-        message={
-          pendingDelete
-            ? `¿Deseas eliminar a ${pendingDelete.name}? Esta acción no se puede deshacer.`
-            : ""
-        }
-        confirmLabel="Eliminar"
-        danger
-        onConfirm={handleDeleteConfirm}
-        onCancel={() => setPendingDelete(null)}
-      />
+    <ConfirmDialog
+      open={Boolean(pendingDelete)}
+      title={`Eliminar ${deleteLabel}`}
+      message={
+        pendingDelete
+          ? `¿Deseas eliminar a ${pendingDelete.name}? Esta acción no se puede deshacer.`
+          : ""
+      }
+      confirmLabel="Eliminar"
+      danger
+      onConfirm={handleDeleteConfirm}
+      onCancel={() => setPendingDelete(null)}
+    />
     </section>
   );
 }
