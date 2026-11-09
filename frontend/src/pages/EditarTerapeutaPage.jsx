@@ -79,12 +79,27 @@ function EditarTerapeutaPage() {
 
   const handlePhotoChange = (event) => {
     const file = event.target.files?.[0];
-
-    if (file) {
-      setSelectedPhoto(file);
-      setPhotoPreview(URL.createObjectURL(file));
-      setPhotoError(false);
+  
+    if (!file) return;
+  
+    const formatosPermitidos = ["image/jpeg", "image/png"];
+  
+    if (!formatosPermitidos.includes(file.type)) {
+      setErrorMessage("La fotografía debe estar en formato JPG, JPEG o PNG.");
+      event.target.value = "";
+      return;
     }
+  
+    if (file.size > 1024 * 1024) {
+      setErrorMessage("La fotografía no debe superar 1 MB.");
+      event.target.value = "";
+      return;
+    }
+  
+    setSelectedPhoto(file);
+    setPhotoPreview(URL.createObjectURL(file));
+    setPhotoError(false);
+    setErrorMessage(null);
   };
 
   const handleSubmit = async (event) => {
