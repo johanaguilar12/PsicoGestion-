@@ -53,13 +53,18 @@ public class GestionarTerapeutasUseCaseTest {
 
     @Test
     void registrar_FechaNacimientoFutura_LanzaExcepcion() {
-        terapeutaValido.setFechaNacimiento(LocalDate.now().plusDays(1)); // Fecha en el futuro
-
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            gestionarTerapeutasUseCase.registrar(terapeutaValido);
-        });
-
-        assertEquals("La fecha de nacimiento debe ser estrictamente anterior a la fecha actual.", exception.getMessage());
+        terapeutaValido.setFechaNacimiento(LocalDate.now().plusDays(1));
+    
+        IllegalArgumentException exception = assertThrows(
+            IllegalArgumentException.class,
+            () -> gestionarTerapeutasUseCase.registrar(terapeutaValido)
+        );
+    
+        assertEquals(
+            "El terapeuta debe tener al menos 22 años cumplidos.",
+            exception.getMessage()
+        );
+    
         verify(terapeutaRepository, never()).guardar(any(Terapeuta.class));
     }
 

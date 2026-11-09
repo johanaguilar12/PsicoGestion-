@@ -1,6 +1,9 @@
+
 package mx.uady.psicogestion.domain.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import mx.uady.psicogestion.domain.validation.ValidacionesDatos;
+
 import java.time.LocalDateTime;
 
 public class Secretaria {
@@ -50,30 +53,41 @@ public class Secretaria {
     public void setFechaRegistro(LocalDateTime fechaRegistro) { this.fechaRegistro = fechaRegistro; }
 
     public boolean esNombreValido() {
-        return this.nombreCompleto != null && this.nombreCompleto.length() <= 50;
+        return this.nombreCompleto != null &&
+                this.nombreCompleto.length() <= 50;
     }
 
     public boolean esCorreoInstitucionalValido() {
-        if (this.correoElectronico == null || this.correoElectronico.isBlank()) {
-            return false;
-        }
+        return ValidacionesDatos.correoInstitucionalValido(
+            this.correoElectronico
+        );
+    }
 
-        String correo = this.correoElectronico.trim().toLowerCase();
-
-        return correo.matches(
-            "^[a-z0-9._%+-]+@(correo\\.uady\\.mx|alumnos\\.uady\\.mx)$"
+    public boolean esTelefonoValido() {
+        return ValidacionesDatos.telefonoValido(
+            this.telefono
         );
     }
 
     public boolean esContrasenaSegura() {
+        if (this.contrasena == null ||
+                this.contrasena.length() < 8 ||
+                this.contrasena.length() > 25) {
+            return false;
+        }
 
-        if (this.contrasena == null || this.contrasena.length() < 8 || this.contrasena.length() > 25) return false;
+        boolean tieneNumero =
+                this.contrasena.matches(".*\\d.*");
 
-        boolean tieneNumero = this.contrasena.matches(".*\\d.*");
+        boolean tieneMayuscula =
+                !this.contrasena.equals(
+                    this.contrasena.toLowerCase()
+                );
 
-        boolean tieneMayuscula = !this.contrasena.equals(this.contrasena.toLowerCase());
-
-        boolean tieneEspecial = this.contrasena.matches(".*[!@#$%^&*(),.?\":{}|<>].*");
+        boolean tieneEspecial =
+                this.contrasena.matches(
+                    ".*[!@#$%^&*(),.?\":{}|<>].*"
+                );
 
         return tieneNumero && tieneMayuscula && tieneEspecial;
     }

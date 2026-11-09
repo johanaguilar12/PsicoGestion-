@@ -1,7 +1,9 @@
+
 package mx.uady.psicogestion.domain.entities;
 
+import mx.uady.psicogestion.domain.validation.ValidacionesDatos;
+
 import java.time.LocalDate;
-import java.time.Period;
 
 public class Paciente {
     private Integer idPaciente;
@@ -14,11 +16,10 @@ public class Paciente {
     private boolean activo;
 
     public Paciente() {
-        this.activo = true; // Por defecto, un paciente nuevo está activo
+        this.activo = true;
         this.fechaRegistro = LocalDate.now();
     }
 
-    // Getters y Setters
     public Integer getIdPaciente() { return idPaciente; }
     public void setIdPaciente(Integer idPaciente) { this.idPaciente = idPaciente; }
 
@@ -43,16 +44,26 @@ public class Paciente {
     public boolean isActivo() { return activo; }
     public void setActivo(boolean activo) { this.activo = activo; }
 
-    // --- Reglas de Negocio Empresariales ---
-
-    // Validar que la fecha de nacimiento corresponda a una edad igual o mayor a 7 años[cite: 4]
+    
     public boolean esMayorDeSieteAnios() {
-        if (this.fechaNacimiento == null) return false;
-        int edad = Period.between(this.fechaNacimiento, LocalDate.now()).getYears();
-        return edad >= 7;
+        return ValidacionesDatos.edadMinima(
+            this.fechaNacimiento, 15
+        );
     }
 
-    // El atributo activo gestionará la baja lógica[cite: 4]
+    public boolean esCurpValida() {
+        return ValidacionesDatos.curpValida(
+            this.curp,
+            this.nombreCompleto,
+            this.fechaNacimiento,
+            this.sexo
+        );
+    }
+
+    public boolean esTelefonoValido() {
+        return ValidacionesDatos.telefonoValido(this.telefono);
+    }
+
     public void darDeBajaLogica() {
         this.activo = false;
     }
