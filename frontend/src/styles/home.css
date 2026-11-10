@@ -523,3 +523,80 @@
     line-height: 28px;
   }
 }
+
+/* Buscador de próximas citas: diseño adaptable */
+.home-page, .home-section { min-width: 0; }
+.home-section__heading { min-width: 0; }
+.home-section__controls {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+  min-width: 0;
+}
+.home-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 0 1 280px;
+  min-width: 0;
+}
+.home-search__icon {
+  position: absolute;
+  left: 12px;
+  color: var(--gray-600);
+  pointer-events: none;
+}
+.home-search__input {
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  min-width: 0;
+  min-height: 40px;
+  padding: 8px 12px 8px 38px;
+  border: 1px solid var(--gray-200);
+  border-radius: 8px;
+  background: var(--white);
+  color: var(--blue-900);
+  font: inherit;
+  font-size: 14px;
+}
+.home-search__input:focus-visible {
+  outline: 2px solid var(--blue-700);
+  outline-offset: 2px;
+}
+.home-section__controls .home-section__link { flex-shrink: 0; }
+
+@media (max-width: 900px) {
+  .home-section__heading {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 12px;
+  }
+  .home-section__heading > .home-section__title { grid-column: 1; grid-row: 1; }
+  .home-section__controls { display: contents; }
+  .home-section__controls .home-section__link {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+  }
+  .home-search {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    width: 100%;
+    min-width: 0;
+  }
+}
+@media (max-width: 600px) {
+  .home-section__heading > .home-section__title { min-width: 0; }
+  .home-section__controls .home-section__link {
+    gap: 4px;
+    padding: 4px;
+    font-size: 16px;
+    white-space: nowrap;
+  }
+  .home-search__input { min-height: 44px; font-size: 16px; }
+  .next-appointment__primary-value { white-space: normal; overflow-wrap: anywhere; }
+  .next-appointment__detail-value { white-space: normal; overflow-wrap: anywhere; }
+}

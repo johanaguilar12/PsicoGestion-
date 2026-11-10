@@ -217,28 +217,22 @@ function InicioPage() {
         <div className="home-section__heading">
           <h2 id="next-appointment-title" className="home-section__title">Próximas citas</h2>
           
-          {}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            <form onSubmit={handleSearchSubmit} style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-              <div style={{ position: 'absolute', left: '10px', color: '#64748b' }}>
-                <Search size={16} />
-              </div>
-              <input 
-                type="text" 
-                placeholder="Buscar por paciente o folio..." 
-                value={searchTerm} 
+          <div className="home-section__controls">
+            <form className="home-search" onSubmit={handleSearchSubmit} role="search">
+              <Search className="home-search__icon" size={18} aria-hidden="true" />
+              <input
+                className="home-search__input"
+                type="search"
+                aria-label="Buscar cita por paciente o folio"
+                placeholder="Buscar por paciente o folio..."
+                value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                style={{
-                  padding: '8px 12px 8px 32px',
-                  borderRadius: '6px',
-                  border: '1px solid var(--gray-100)',
-                  fontSize: '14px',
-                  outline: 'none',
-                  minWidth: '220px'
-                }}
               />
             </form>
-            <Link to="/agenda" className="home-section__link"><span>Ver agenda</span><ArrowRight size={18} strokeWidth={1.8}/></Link>
+            <Link to="/agenda" className="home-section__link">
+              <span>Ver agenda</span>
+              <ArrowRight size={18} strokeWidth={1.8} />
+            </Link>
           </div>
         </div>
         
