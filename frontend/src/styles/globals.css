@@ -431,6 +431,24 @@ a:focus-visible {
     object-fit: contain;
   }
 
+  .mobile-header__profile-link {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    overflow: hidden;
+    border-radius: 50%;
+  }
+
+  .mobile-header__profile-photo {
+    display: block;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center;
+  }
+
   .mobile-header__menu-button {
     display: grid;
     place-items: center;

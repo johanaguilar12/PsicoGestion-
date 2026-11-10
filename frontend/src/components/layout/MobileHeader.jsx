@@ -1,10 +1,16 @@
+import { useState } from "react";
 import { TextAlignJustify } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useAuth } from "../auth/authContext.js";
 
 function MobileHeader({
   isMenuOpen,
   onMenuOpen,
 }) {
+  const { user } = useAuth();
+  const [failedPhoto, setFailedPhoto] = useState(null);
+  const showPhoto = user.fotoPerfil && failedPhoto !== user.fotoPerfil;
+
   return (
     <header className="mobile-header">
       <Link
@@ -18,6 +24,21 @@ function MobileHeader({
           className="mobile-header__logo"
         />
       </Link>
+
+      {showPhoto && (
+        <Link
+          to={`/usuarios/${user.id}`}
+          className="mobile-header__profile-link"
+          aria-label={`Ver información de ${user.nombreCompleto}`}
+        >
+          <img
+            src={user.fotoPerfil}
+            alt=""
+            className="mobile-header__profile-photo"
+            onError={() => setFailedPhoto(user.fotoPerfil)}
+          />
+        </Link>
+      )}
 
       <button
         type="button"

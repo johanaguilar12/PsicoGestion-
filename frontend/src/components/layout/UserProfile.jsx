@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   ChevronRight,
   CircleUserRound,
@@ -10,6 +11,9 @@ function UserProfile({
   onProfileClick,
   onLogout,
 }) {
+  const [failedPhoto, setFailedPhoto] = useState(null);
+  const showPhoto = user.photo && failedPhoto !== user.photo;
+
   return (
     <div className="sidebar-user">
       <button
@@ -27,11 +31,12 @@ function UserProfile({
         aria-current={isActive ? "page" : undefined}
       >
         <span className="sidebar-user__avatar-container">
-          {user.photo ? (
+          {showPhoto ? (
             <img
               src={user.photo}
               alt=""
               className="sidebar-user__avatar-image"
+              onError={() => setFailedPhoto(user.photo)}
             />
           ) : (
             <CircleUserRound
