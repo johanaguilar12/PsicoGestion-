@@ -41,7 +41,7 @@ public class SecretariaController {
 
             if (foto != null && !foto.isEmpty()) {
                 String fileName = System.currentTimeMillis() + "_" + foto.getOriginalFilename().replaceAll("\\s+", "_");
-                Path uploadPath = Paths.get("/uploads");
+                Path uploadPath = Paths.get("uploads");
                 if (!Files.exists(uploadPath)) Files.createDirectories(uploadPath);
                 Files.copy(foto.getInputStream(), uploadPath.resolve(fileName));
                 secretaria.setFotoPerfil("http://localhost:8081/uploads/" + fileName);
